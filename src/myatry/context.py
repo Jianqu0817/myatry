@@ -116,7 +116,8 @@ class GroupContextBuilder(ContextBuilder):
         attention = select_summaries(available, plain, current.get("sender_id", ""), max_chars=self.group_summary_chars)
         items = list(attention["items"])
         identities["summary_attention"] = {k: v for k, v in attention.items() if k != "items"}
-        identity_source = {k: current[k] for k in ("sender_id", "sender_name", "bot_id", "role", "addressing_bot", "quote_resolution") if k in current}
+        identity_source = {k: current[k] for k in ("sender_id", "sender_name", "bot_id", "role",
+            "addressing_bot", "quote_resolution", "trigger_kind", "mentioned_bot") if k in current}
         presented = message_view(current)
         if current.get("reply_to_id"):
             for row in self.short_memory.recent(self.group_scope):

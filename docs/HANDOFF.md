@@ -2,12 +2,11 @@
 
 先读根README、AGENTS.md与ARCHITECTURE.md。新项目不需要AstrBot或旧项目源码运行；来源及适配见SOURCES.json。**myatry 是主开发仓**：可移植改动从这里同步到兄弟仓库。
 
-## 三仓同步（scripts/sync_repos.py）
+## 三仓关系（均活跃；自动同步已取消，2026-10-24）
 
-- 核心 `src/myatri/**` → MYATRI 同路径（字节一致）；微信契约（wechat_versions/wechat-versions.json/升级指南/wechat_client）→ AstrBot 插件（字节一致）；应用层 `src/myatry/**` → AstrBot `src/myatri_bridge/**`（包名改写）。
-- 默认 dry-run，`--apply` 写入并更新 `docs/sync_manifest.json`；目标侧有本地适配的文件标 NEEDS REVIEW，不盲写。内核 `myatri/companion/` 只报告漂移不自动写入（CLI 适配需人工移植）。
-- 核心 src/myatri 改动不会自动到达 AstrBot 项目（它用冻结 0.2.8 wheel）；需要时按显式发布步骤重建 wheel。
-- 新增微信版本支持只改 `wechat-versions.json` + 两仓保持字节一致，流程见 `docs/微信版本升级指南.md`；`python -m myatry versions` 查看表与运行区实况。
+- 三个仓库都保持活跃、独立演进，只是不再自动同步：原 `scripts/sync_repos.py` 与 `sync_manifest.json` 已删除（单向同步与并行开发不兼容，当日两次事故均源于此）。需要借鉴其他仓改动时按一次性手工移植并注明来源。
+- 唯一保留的跨仓约束：微信兼容表与升级指南在两个微信项目间字节一致，`scripts/check_shared.py` 只读校验（改任一侧后跑一次）。
+- 新增微信版本支持只改 `wechat-versions.json`（两仓各自手改保持一致），流程见 `docs/微信版本升级指南.md`；`python -m myatry versions` 查看表与运行区实况。
 
 ## 记忆证据修复与真人化（2026-10-24）
 

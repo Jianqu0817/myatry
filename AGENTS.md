@@ -1,8 +1,8 @@
 # myatry 工作约定
 
-目标：从 D:/DS_workspace/MYATRI-AstrBot 整合精简的独立项目，保留现有业务能力，去掉不再需要的引入框架和部署层。D:/DS_workspace/myatry 是新项目目录，也是**主开发仓**：新功能先在这里实现，再由 `scripts/sync_repos.py` 同步到兄弟仓库。
+目标：从 D:/DS_workspace/MYATRI-AstrBot 整合精简的独立项目，保留现有业务能力，去掉不再需要的引入框架和部署层。D:/DS_workspace/myatry 是新项目目录，是当前主力运行与开发仓（三仓独立维护，不再自动同步）。
 
-- 兄弟仓库 MYATRI、MYATRI-AstrBot 的**源码**通过 `scripts/sync_repos.py` 单向流入（myatry 为源）；不要在兄弟仓库直接改它们已配对的源码——本地改动会在下次同步时被标记或覆盖。两仓的 `var/`、`upstream/`、运行库、私有配置与进程始终不要动。同步语义见 `docs/sync_manifest.json` 与 HANDOFF。
+- 三仓**均保持活跃、独立演进**，只是不再自动同步（2026-10-24 取消单向同步）：需要借鉴其他仓的改动时按一次性手工移植处理并注明来源。唯一跨仓约束：微信兼容表 `wechat-versions.json` 与升级指南须与 MYATRI-AstrBot 保持字节一致，`scripts/check_shared.py` 只读校验。兄弟仓库的 `var/`、`upstream/`、运行库、私有配置与进程始终不要动。
 - 不读取真实聊天原文、私有配置和凭据，不复制 Key，不登录微信，不调用业务付费模型，不发送真实微信，不重启生产。
 - 主脑决定架构/接口并独立验收；执行任务只改指定范围，不自行派代理，不操作 .model-desk 记录。默认搜索排除 .model-desk、var、.venv。
 - 保留群聊、本地同库互斥CLI、记忆/摘要/情绪、联网、Harness同轮回传、监视窗口与回复概率。保留稳定身份认证、消息/任务去重和发送结果不明不重做等现有行为。

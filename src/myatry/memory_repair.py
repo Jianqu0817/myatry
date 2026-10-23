@@ -7,6 +7,8 @@ from myatri.cognition.materials import select_materials
 from myatri.cognition.tasks import cognitive_call, proposal_for
 from myatri.contracts import Edge, Record, digest
 
+from .short_memory import evidence_key
+
 
 class UnresolvedCandidates(ValueError):
     """No validated candidate remains; do not mark the source as organized."""
@@ -28,7 +30,11 @@ class ExperienceOrganizer(CoreOrganizer):
     def _candidate_error(self, message, item, shown=None):
         source = _group_source(message)
         quote = item.get("quote")
-        if not isinstance(quote, str) or not quote or quote not in (source["text"] if source else message.body_markdown):
+        original = source["text"] if source else message.body_markdown
+        # Exact substring first; the normalised comparison only rescues WeChat
+        # separator/whitespace artefacts, never rewording.
+        if (not isinstance(quote, str) or not quote
+                or (quote not in original and evidence_key(quote) not in evidence_key(original))):
             return "quote_not_exact"
         try:
             normalized, attribution = _group_item(message, item)
@@ -71,7 +77,10 @@ class ExperienceOrganizer(CoreOrganizer):
         for index, item in enumerate(data["events"]):
             ref = item.get("message_ref")
             matches = [row for row in windows if row["ref"] == ref]
-            code = "quote_outside_named_window" if not any(item["quote"] in row["text"] for row in matches) else None
+            code = "quote_outside_named_window" if not any(
+                item["quote"] in row["text"]
+                or evidence_key(item["quote"]) in evidence_key(row["text"])
+                for row in matches) else None
             if not code:
                 rid, rev = ref.rsplit("@", 1)
                 code = self._candidate_error(self.store.get_record(rid, int(rev)), item, shown)

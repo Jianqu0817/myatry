@@ -7,15 +7,15 @@
   },
   "bridge:attention.py": {
     "layer": "app",
-    "source_sha": "98972aa78c357b98aaf0206fc793dba807eec138383bb4d280302049628430d5",
-    "status": "needs_review",
+    "source_sha": "8cc056ed1d2c47d22538e5ee62aabcce99ff3f8fafca61db440bcdd305738fcc",
+    "status": "applied_update",
     "target_sha": "c6aa02ee2e229ebb08acc8b8fb08d8d7ea632bfe8027cc10ae43977c380c6b6c"
   },
   "bridge:bridge.py": {
     "layer": "app",
-    "source_sha": "9d40d7d12eaef699875ff456538bb4d8ee94a452c879dd900b94814cfa9c249e",
-    "status": "needs_review",
-    "target_sha": "8cc7ed2b0cbd6166107cbd57cd2b26590d2afe4aa7be37547432cf92cf6fcc8c"
+    "source_sha": "e8b3286b4fcdad613daec063e5d8e5ae8dd0fef2571636c502f142bb813bf3e7",
+    "status": "applied_update",
+    "target_sha": "7e3039bfcf8715ce83e13203c2918c268b1ab4daf078e03c5ab8ee241348f40d"
   },
   "bridge:bubbles.py": {
     "layer": "app",
@@ -92,7 +92,7 @@
   "bridge:context_viewer.py": {
     "layer": "app",
     "source_sha": "4146242aa97f86224093d574c9b7625ec9e831d8c46da35ec63575877f9d5809",
-    "status": "needs_review",
+    "status": "in_sync",
     "target_sha": "0c41e4f9aadbde2c5422fb33aa942d8d4dea187c908a94ba07feeb9b00f3e29e"
   },
   "bridge:control_proxy.py": {
@@ -121,8 +121,8 @@
   },
   "bridge:group_prompt.py": {
     "layer": "app",
-    "source_sha": "354170c5c038b37573f4b998ad55912aba0194fb375b547832fba387ed6a8b32",
-    "status": "in_sync",
+    "source_sha": "a3bdfe9c4f7505fe1d9f3926e2f5c58bd755d9b994555b9c3ddc2591c0a71df7",
+    "status": "applied_update",
     "target_sha": "354170c5c038b37573f4b998ad55912aba0194fb375b547832fba387ed6a8b32"
   },
   "bridge:harness\\computer-runner.mjs": {
@@ -151,9 +151,9 @@
   },
   "bridge:health.py": {
     "layer": "app",
-    "source_sha": "e0832f0f740122add3c3a81fade908eefc99a4357c716fb9db9215bb1f7d84e8",
+    "source_sha": "111788f37b2d88731f52b1b88818cd30b01c373864a3fee5d1ed691be0d67364",
     "status": "in_sync",
-    "target_sha": "e0832f0f740122add3c3a81fade908eefc99a4357c716fb9db9215bb1f7d84e8"
+    "target_sha": "111788f37b2d88731f52b1b88818cd30b01c373864a3fee5d1ed691be0d67364"
   },
   "bridge:identity.py": {
     "layer": "app",
@@ -164,7 +164,7 @@
   "bridge:local_chat.py": {
     "layer": "app",
     "source_sha": "6b3ee022eabd7c1c7548a13ff5c3e4a9d80fbd8dcb3d040298935d0de09f5811",
-    "status": "needs_review",
+    "status": "in_sync",
     "target_sha": "ba3b26b2cdf7323076be813be249a73de3816424983b073025fc34dabba78c28"
   },
   "bridge:maintenance.py": {
@@ -175,9 +175,9 @@
   },
   "bridge:memory_repair.py": {
     "layer": "app",
-    "source_sha": "ef9a7cfdb7d73e83df3ad6a8889597ef3601cdb649bfb2ee91c963dc4af6ba9e",
+    "source_sha": "bf94d70a7dcf3bda6fc499d0b67950b213ddacf35563c9e51c6d30cc506d4b9b",
     "status": "in_sync",
-    "target_sha": "ef9a7cfdb7d73e83df3ad6a8889597ef3601cdb649bfb2ee91c963dc4af6ba9e"
+    "target_sha": "bf94d70a7dcf3bda6fc499d0b67950b213ddacf35563c9e51c6d30cc506d4b9b"
   },
   "bridge:memory_review.py": {
     "layer": "app",
@@ -188,13 +188,13 @@
   "bridge:monitor.html": {
     "layer": "app",
     "source_sha": "b0ebcd1af6eae825c328939a14efe11c4d632e6a4d2b645ead8f7666ab2ee0e3",
-    "status": "needs_review",
+    "status": "in_sync",
     "target_sha": "09572f1063efdede2799eb0ca5e36e645053df6891e22c6fbcd1ee3ecf0a2ff5"
   },
   "bridge:monitor.py": {
     "layer": "app",
     "source_sha": "0f2fe89edc0a631750df78d4f1ab04e55d6b32762f62bc310db954f5d56b1a23",
-    "status": "needs_review",
+    "status": "in_sync",
     "target_sha": "5af40ba2aac1cf0552db9c3f6e9eccd7291c5e5bd254b783838e1db4a7768858"
   },
   "bridge:monitor_stats.py": {
@@ -205,8 +205,8 @@
   },
   "bridge:proactive.py": {
     "layer": "app",
-    "source_sha": "9ac556ad9a63a8cf34db8e1bb2726953329e5fa41f9b61e46114d36952874d20",
-    "status": "in_sync",
+    "source_sha": "11a9abfa9d336b2bce7629bc61ea620264ef51308d4b7c276764b40c59ddc59a",
+    "status": "applied_update",
     "target_sha": "9ac556ad9a63a8cf34db8e1bb2726953329e5fa41f9b61e46114d36952874d20"
   },
   "bridge:proactive_prompt.py": {
@@ -265,9 +265,9 @@
   },
   "bridge:short_memory.py": {
     "layer": "app",
-    "source_sha": "4fdab047b55c69f03fcde215ece62b17aeb9681ead96d102ebcece2ea24d5fb6",
+    "source_sha": "49e1a2b0337a0c482456c29c4c5bd3ae63443a8b531ba0504b7ab408828b5bc3",
     "status": "in_sync",
-    "target_sha": "4fdab047b55c69f03fcde215ece62b17aeb9681ead96d102ebcece2ea24d5fb6"
+    "target_sha": "49e1a2b0337a0c482456c29c4c5bd3ae63443a8b531ba0504b7ab408828b5bc3"
   },
   "bridge:tool_reading.py": {
     "layer": "app",
@@ -290,7 +290,7 @@
   "core:__init__.py": {
     "layer": "core",
     "source_sha": "2797baa19c2cd9757e8aed4de23002a4b7593e16d6e35bd516c488f3cfd5d85b",
-    "status": "needs_review",
+    "status": "in_sync",
     "target_sha": "52a8b05b8a1b9fba7fefd536f52cce40ffd82afb8d83a65238d1f0af8eeddf45"
   },
   "core:_vendor\\__init__.py": {

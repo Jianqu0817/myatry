@@ -5,7 +5,9 @@ from myatri.contracts import digest
 
 def followup(db, scope, key, *, wake, now, ttl=600):
     if wake:
-        rounds = 1 + int(digest(["attention-v1", key])[:8], 16) % 4
+        # 2-4 sustained follow-ups per wake: an @-conversation keeps her engaged
+        # for a couple of rounds instead of possibly dropping after one reply.
+        rounds = 2 + int(digest(["attention-v1", key])[:8], 16) % 3
         db.execute(
             "INSERT OR REPLACE INTO attention_windows VALUES(?,?,?,?)",
             (scope, rounds, now + ttl, key),

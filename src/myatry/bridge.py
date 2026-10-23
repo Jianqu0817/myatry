@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 from contextlib import closing
 from copy import deepcopy
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import hashlib
 import importlib
 import json
@@ -221,6 +221,10 @@ class Bridge:
                 scope TEXT NOT NULL,candidate_id TEXT NOT NULL,delivery_id TEXT NOT NULL,
                 PRIMARY KEY(scope,candidate_id))""")
             self.routes = {row[0]: json.loads(row[1]) for row in db.execute("SELECT * FROM group_routes")}
+            # Authenticated bot identities are legitimate summary subjects even
+            # though bot replies never enter the listening window as senders.
+            self.short_memory.known_subjects.update(
+                route.get("bot_id") for route in self.routes.values() if route.get("bot_id"))
         from .computer_reporting import ComputerReports
         self.computer_reports = ComputerReports(self)
         self.computer.before_submit = lambda source, task_id: self.computer_reports.wait(
@@ -424,12 +428,20 @@ class Bridge:
         recent = self.short_memory.recent(scope, limit=1)
         if recent:
             group_last = _aware(recent[-1].get("sent_at"))
+        revive_hours = float((self.proactive_config or {}).get("revive_silence_hours", 0.0) or 0.0)
+        revive_available = False
+        if revive_hours > 0 and group_last is not None and now - group_last >= timedelta(hours=revive_hours):
+            with closing(sqlite3.connect(self.path)) as db:
+                used = db.execute("SELECT 1 FROM proactive_sources WHERE scope=? AND candidate_id=?",
+                                  (scope, f"revive:{now:%Y%m%d}")).fetchone()
+            revive_available = not used
         return {
             "last_speech_at": datetime.fromtimestamp(last, timezone.utc) if last else None,
             "proactive_today": today,
             "group_last_message_at": group_last,
             "budget_used_ratio": self._proactive_budget_ratio(scope),
             "explicit_reply_pending": bool(pending),
+            "revive_available": revive_available,
         }
 
     def _proactive_budget_ratio(self, scope):
@@ -492,7 +504,55 @@ class Bridge:
                         context_hash=digest([scope, message.get("message_id")]),
                         excerpt=text[:200], source_at=_aware(message.get("sent_at"))))
                     break
+        found.extend(self._interest_candidates(scope, now, consumed))
+        found.extend(self._revive_candidates(scope, now, consumed))
         return found
+
+    def _interest_candidates(self, scope, now, consumed):
+        """正在热议的对话：密度达到阈值且命中关键词或问句，才值得选择性插话。"""
+        window_minutes = float((self.proactive_config or {}).get("interest_window_minutes", 10.0))
+        threshold = int((self.proactive_config or {}).get("interest_burst_messages", 4))
+        burst = []
+        for message in reversed(self.short_memory.recent(scope, limit=20)):
+            if is_self_initiated(message):
+                continue
+            stamp = _aware(message.get("sent_at"))
+            if stamp is None or now - stamp > timedelta(minutes=window_minutes):
+                break
+            burst.append(message)
+        if len(burst) < threshold:
+            return []
+        joined = "".join(str(m.get("text", "")) for m in burst)
+        keywords = [str(k).strip() for k in (self.proactive_config or {}).get("interest_keywords", [])
+                    if str(k).strip()]
+        hot = any(word in joined for word in keywords) or ("？" in joined or "?" in joined)
+        latest = str(burst[0].get("message_id", ""))
+        if not hot or not latest or latest in consumed:
+            return []
+        return [Candidate(
+            candidate_id=latest, kind="interesting_exchange", created_at=now,
+            reason="群里正聊得热闹，且出现了小温暖可能感兴趣的话题，可以自然插一句",
+            context_hash=digest([scope, latest]),
+            excerpt=joined[-200:], source_at=_aware(burst[0].get("sent_at")))]
+
+    def _revive_candidates(self, scope, now, consumed):
+        """群沉寂很久且今天还没暖过场：每天至多一次的主动找人聊。"""
+        revive_hours = float((self.proactive_config or {}).get("revive_silence_hours", 0.0) or 0.0)
+        if revive_hours <= 0:
+            return []
+        recent = self.short_memory.recent(scope, limit=1)
+        if not recent:
+            return []
+        last_seen = _aware(recent[-1].get("sent_at"))
+        revive_id = f"revive:{now:%Y%m%d}"
+        if last_seen is None or now - last_seen < timedelta(hours=revive_hours):
+            return []
+        if revive_id in consumed:
+            return []
+        return [Candidate(
+            candidate_id=revive_id, kind="group_revive", created_at=now,
+            reason="群里安静很久了，也没人叫小温暖；可以自然冒个泡，找大家聊聊",
+            context_hash=digest([scope, revive_id]), source_at=last_seen)]
 
     async def _proactive_generate(self, *, scope, candidate, now, instruction):
         """Generate one proactive utterance without writing a human-looking turn.
@@ -758,6 +818,8 @@ class Bridge:
     async def receive(self, message: Incoming):
         if message.route not in self.config.get("allowed_groups", []):
             return {"status": "ignored", "reason": "group_not_allowed"}
+        # Every authenticated turn re-registers the bot as a valid memory subject.
+        self.short_memory.known_subjects.add(message.bot_id)
         if (
             message.sender_id == message.bot_id
             or not message.text.strip()
@@ -840,7 +902,13 @@ class Bridge:
                         explicit = True
                     # A uniform hash draw keeps the 5% decision stable on retries/restarts.
                     draw = int(digest(["random-reply-v1", message.key])[:13], 16) / 16**13
-                    probability=max(self.random_probability,self.attention_probability) if attention['active'] else self.random_probability
+                    if attention['active']:
+                        # 刚被 @ 进对话的最初一两轮近乎必跟（真人被点名会接话），
+                        # 之后的轮次回到基础跟进概率，让注意力自然衰减。
+                        engaged = 0.95 if attention['remaining'] >= 2 else self.attention_probability
+                        probability = max(self.random_probability, engaged)
+                    else:
+                        probability = self.random_probability
                     if not explicit and draw >= probability:
                         return {"status": "ignored", "reason": "not_a_trigger"}
                     recent = db.execute(

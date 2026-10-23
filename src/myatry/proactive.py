@@ -50,8 +50,12 @@ SELF_INITIATED_METADATA: dict[str, Any] = {
 }
 
 #: 候选优先级（设计文档 3.7 的四级，数值越小越优先）。
+#: ``group_revive``（群沉寂后的主动暖场）与 ``interesting_exchange``
+#: （正在热议、可选择性插话）是后续加入的"更像真人"方向。
 CANDIDATE_PRIORITY = {
+    "group_revive": 1,
     "failed_explicit": 1,
+    "interesting_exchange": 2,
     "deferred_topic": 2,
     "temporary_entry": 3,
     "unanswered_question": 4,
@@ -66,9 +70,18 @@ DEFAULTS: dict[str, Any] = {
     "active_end": "23:30",
     "min_interval_minutes": 20.0,
     "max_interval_minutes": 90.0,
+    # >0 时判定循环按固定节奏跑（例如 10 分钟一次"有没有感兴趣的对话"）；
+    # 0 保持旧的 20–90 分钟随机采样。
+    "tick_interval_minutes": 0.0,
     "speech_cooldown_minutes": 15.0,
     "daily_limit": 10,
     "group_silence_hours": 2.0,
+    # >0 时群沉寂达到该小时数后允许一次"主动暖场"候选（每天至多一次）。
+    "revive_silence_hours": 0.0,
+    # 感兴趣对话的判定：窗口内消息数达到阈值，且命中关键词或问句。
+    "interest_burst_messages": 4,
+    "interest_window_minutes": 10.0,
+    "interest_keywords": [],
     "budget_limit_ratio": 0.8,
     "candidate_ttl_seconds": 45.0,
 }
@@ -182,6 +195,9 @@ class ProactiveState:
     group_last_message_at: datetime | None = None
     budget_used_ratio: float | None = None
     explicit_reply_pending: bool = False
+    #: 群已沉寂超过 revive_silence_hours 且今天的暖场名额未用：本 tick 允许
+    #: 越过"群静默"闸门发起一次 group_revive。
+    revive_available: bool = False
 
 
 @dataclass(frozen=True)
@@ -266,9 +282,14 @@ class ProactiveSettings:
     active_end: time = time(23, 30)
     min_interval_minutes: float = 20.0
     max_interval_minutes: float = 90.0
+    tick_interval_minutes: float = 0.0
     speech_cooldown_minutes: float = 15.0
     daily_limit: int = 10
     group_silence_hours: float = 2.0
+    revive_silence_hours: float = 0.0
+    interest_burst_messages: int = 4
+    interest_window_minutes: float = 10.0
+    interest_keywords: tuple[str, ...] = ()
     budget_limit_ratio: float = 0.8
     candidate_ttl_seconds: float = 45.0
 
@@ -313,6 +334,13 @@ class ProactiveSettings:
         limit = values.get("daily_limit", DEFAULTS["daily_limit"])
         if isinstance(limit, bool) or not isinstance(limit, int) or limit < 0:
             raise ValueError("主动发言配置 daily_limit 必须是非负整数")
+        burst = values.get("interest_burst_messages", DEFAULTS["interest_burst_messages"])
+        if isinstance(burst, bool) or not isinstance(burst, int) or not 2 <= burst <= 20:
+            raise ValueError("主动发言配置 interest_burst_messages 必须是 2–20 的整数")
+        keywords = values.get("interest_keywords", DEFAULTS["interest_keywords"])
+        if (not isinstance(keywords, (list, tuple))
+                or any(not isinstance(word, str) or not word.strip() for word in keywords)):
+            raise ValueError("主动发言配置 interest_keywords 必须是非空字符串数组")
         return cls(
             enabled=_as_flag(values, "enabled"),
             shadow_mode=_as_flag(values, "shadow_mode"),
@@ -321,9 +349,17 @@ class ProactiveSettings:
             active_end=end,
             min_interval_minutes=low,
             max_interval_minutes=high,
+            tick_interval_minutes=_as_number(values, "tick_interval_minutes",
+                                             minimum=0.0, maximum=360.0),
             speech_cooldown_minutes=_as_number(values, "speech_cooldown_minutes", minimum=0.0),
             daily_limit=limit,
             group_silence_hours=_as_number(values, "group_silence_hours", minimum=0.0),
+            revive_silence_hours=_as_number(values, "revive_silence_hours",
+                                            minimum=0.0, maximum=24.0),
+            interest_burst_messages=burst,
+            interest_window_minutes=_as_number(values, "interest_window_minutes",
+                                               minimum=1.0, maximum=60.0),
+            interest_keywords=tuple(word.strip() for word in keywords),
             budget_limit_ratio=_as_number(values, "budget_limit_ratio", minimum=0.0, maximum=1.0),
             candidate_ttl_seconds=_as_number(values, "candidate_ttl_seconds", minimum=1.0),
         )
@@ -457,7 +493,13 @@ class ProactiveScheduler:
             })
             return
         while not self._stopped:
-            delay = self.sample_interval_seconds()
+            if self.settings.tick_interval_minutes > 0:
+                # Fixed observation cadence (e.g. a 10-minute "anything
+                # interesting going on?" pass); speech frequency stays bounded
+                # by the cooldown, daily-limit and budget gates below.
+                delay = self.settings.tick_interval_minutes * 60
+            else:
+                delay = self.sample_interval_seconds()
             self._next_at = self.now() + timedelta(seconds=delay)
             await asyncio.sleep(delay)
             if self._stopped:
@@ -527,12 +569,16 @@ class ProactiveScheduler:
             return await self._finish(now, gates, skipped="daily_limit")
         gates.append("daily_limit")
 
-        # 闸门 6：群内静默超过 2 小时则跳过；不知道最后消息时间也算静默。
+        # 闸门 6：群内静默超过阈值则跳过——除非已具备"主动暖场"资格
+        # （沉寂达到 revive_silence_hours 且今日名额未用），此时沉寂正是
+        # 开口的理由。不知道最后消息时间仍视为静默跳过。
         if state.group_last_message_at is None:
             return await self._finish(now, gates, skipped="group_silent")
         silent = now - _aware(state.group_last_message_at, now)
         if silent > timedelta(hours=self.settings.group_silence_hours):
-            return await self._finish(now, gates, skipped="group_silent")
+            if not state.revive_available:
+                return await self._finish(now, gates, skipped="group_silent")
+            gates.append("revive")
         gates.append("group_silent")
 
         # 闸门 7：预算余量必须 ≥ 20%（已用 < 80%）；未知同样视为不通过。
@@ -688,6 +734,7 @@ class ProactiveScheduler:
                 group_last_message_at=stamp("group_last_message_at"),
                 budget_used_ratio=None if ratio is None else float(ratio),
                 explicit_reply_pending=bool(raw.get("explicit_reply_pending", False)),
+                revive_available=bool(raw.get("revive_available", False)),
             )
         except (TypeError, ValueError):
             return None

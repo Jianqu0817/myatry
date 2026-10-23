@@ -9,6 +9,12 @@
 - 核心 src/myatri 改动不会自动到达 AstrBot 项目（它用冻结 0.2.8 wheel）；需要时按显式发布步骤重建 wheel。
 - 新增微信版本支持只改 `wechat-versions.json` + 两仓保持字节一致，流程见 `docs/微信版本升级指南.md`；`python -m myatry versions` 查看表与运行区实况。
 
+## 记忆证据修复与真人化（2026-10-24）
+
+- 记忆误拒修复：机器人自身 ID 经认证后是合法记忆主体（`short_memory.known_subjects`，Bridge 从路由与每轮消息注册）；引用校验改为"精确子串优先，`evidence_key` 确定性归一化兜底"（U+2005→空格、空白折叠），改写引用依旧拒收。A1 路径（memory_repair）同样兜底。health 把 transient_personal_claim 从待核中分离（by_design/pending_review）。
+- 真人化机制：@唤醒跟随轮数 2-4（attention-v1 采样改 2+hash%3），且被@后最初一两轮近乎必跟（0.95）再衰减到基础概率；proactive 新增 `tick_interval_minutes`（固定观察节奏，如10分钟）、`revive_silence_hours`（群沉寂后每天至多一次主动暖场，group_revive 候选 + revive 闸门豁免）、`interest_*`（消息密度+关键词/问句 → interesting_exchange 选择性插话）；群感参考规则进 group_prompt（自然化用玩笑/口头禅，不复读不冒犯）。默认值保持保守（全关），本机配置已启用。
+- sync_repos 修复：import_module("myatry.x") 字符串路径参与包名改写；NEEDS REVIEW 配对在目标侧漂移未解决前不再被源更新覆盖。
+
 ## 运行与配置
 
 - Setup.cmd安装基础环境并prepare/check；Run.cmd转发统一子命令。chat/wechat必须显式--offline或--live。

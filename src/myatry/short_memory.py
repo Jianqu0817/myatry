@@ -12,10 +12,25 @@ import hashlib
 import inspect
 import json
 from pathlib import Path
+import re
 import sqlite3
 import time
 
 from myatri.contracts import ModelRequest
+
+
+_WHITESPACE_RUN = re.compile(r"\s+")
+
+
+def evidence_key(text):
+    """Deterministic comparison form for quote evidence.
+
+    WeChat separates At-mentions and name spacing with U+2005, which models
+    routinely normalise to plain spaces; runs of whitespace also collapse.
+    The transform is content-preserving and deterministic — a paraphrase
+    still fails comparison against the transformed original.
+    """
+    return _WHITESPACE_RUN.sub(" ", str(text).replace("\u2005", " ")).strip()
 
 
 ATTRIBUTIONS = ["self_report", "reported", "uncertain", "conversation"]
@@ -148,6 +163,10 @@ class ShortMemory:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.batch_size, self.raw_limit, self.summary_every = batch_size, raw_limit, summary_every
         self.summary_limit, self.retry_seconds = summary_limit, retry_seconds
+        # Subjects outside the window senders that are still legitimate: the
+        # bot's own authenticated ID (members talk about it constantly, yet its
+        # replies never enter the listening window, so it can never be a sender).
+        self.known_subjects = set()
         self.max_input_chars = max_input_chars
         self._locks: dict[str, asyncio.Lock] = {}
         with closing(self._connect()) as db, db:
@@ -413,16 +432,16 @@ class ShortMemory:
                 "included_message_count": len(included), "omitted_message_ids": omitted,
                 "complete": not omitted}
 
-    @staticmethod
-    def _validate_items(value, messages):
+    def _validate_items(self, value, messages):
         # Also validate for injected/stub gateways which may not enforce schemas.
         import jsonschema
         jsonschema.validate(value, SUMMARY_SCHEMA)
         evidence = {message["message_id"]: message for message in messages}
         people = {message["sender_id"] for message in messages}
+        subjects = people | self.known_subjects
         for item in value["items"]:
             speaker, subject = item["speaker_id"], item["subject_id"]
-            if speaker not in people or (subject and subject not in people):
+            if speaker not in people or (subject and subject not in subjects):
                 raise EvidenceError("unknown_member_id", "speaker_id/subject_id")
             refs = item["source_message_ids"]
             if any(ref not in evidence or evidence[ref]["sender_id"] != speaker for ref in refs):
@@ -438,8 +457,13 @@ class ShortMemory:
             if {quote["message_id"] for quote in quotes} != set(refs):
                 raise EvidenceError("quote_source_mismatch", "source_quotes")
             for quote in quotes:
-                if (quote["message_id"] not in evidence
-                        or quote["quote"] not in evidence[quote["message_id"]]["text"]):
+                # Exact substring first; the deterministic normalised form only
+                # rescues WeChat-separator/whitespace artefacts, never rewording.
+                if quote["message_id"] not in evidence:
+                    raise EvidenceError("quote_not_exact", "source_quotes/quote")
+                original = evidence[quote["message_id"]]["text"]
+                if (quote["quote"] not in original
+                        and evidence_key(quote["quote"]) not in evidence_key(original)):
                     raise EvidenceError("quote_not_exact", "source_quotes/quote")
 
     def _checked_candidates(self, value, messages, prior, scope, end_seq, state, allowed_sources=None):

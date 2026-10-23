@@ -43,7 +43,16 @@ def health_snapshot(root, *, now=None):
                     if "code" in columns:
                         for code, count in db.execute("SELECT code,COUNT(*) FROM listening_rejections GROUP BY code"):
                             reasons[code if code in SUMMARY_REASONS else "other"] += count
-                    result["summary_quarantine"] = {"total": rejected, "by_reason": dict(reasons)}
+                    # transient_personal_claim is an intentional classification
+                    # (jokes/open threads are not durable memory), not an error;
+                    # surface it separately so real pending review stands out.
+                    transient = reasons.pop("transient_personal_claim", 0)
+                    result["summary_quarantine"] = {
+                        "total": rejected,
+                        "by_design": transient,
+                        "pending_review": rejected - transient,
+                        "by_reason": dict(reasons),
+                    }
             if count and not summaries:
                 alert("summary_no_success", "error", count, "旁听已有积压，但尚无成功摘要。")
             if repeated:

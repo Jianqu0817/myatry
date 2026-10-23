@@ -62,8 +62,16 @@ active_start = "09:00"
 active_end = "23:30"
 min_interval_minutes = 20.0
 max_interval_minutes = 90.0
+# >0 时按固定节奏判定（例如 10 分钟一次"有没有感兴趣的对话"）；0 保持随机采样。
+tick_interval_minutes = 0.0
 speech_cooldown_minutes = 15.0
 daily_limit = 10
 group_silence_hours = 2.0
+# >0 时群沉寂达到该小时数后，允许每天至多一次主动暖场。
+revive_silence_hours = 0.0
+# 感兴趣对话判定：窗口内消息数阈值 + 关键词/问句命中才插话。
+interest_burst_messages = 4
+interest_window_minutes = 10.0
+interest_keywords = []
 budget_limit_ratio = 0.8
 candidate_ttl_seconds = 45.0

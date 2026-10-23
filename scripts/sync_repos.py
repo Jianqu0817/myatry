@@ -55,6 +55,8 @@ def rename_imports(text, package):
     text = re.sub(r"\bfrom myatry\.", f"from {package}.", text)
     text = re.sub(r"\bfrom myatry import", f"from {package} import", text)
     text = re.sub(r"\bimport myatry\b", f"import {package}", text)
+    # Dynamic module paths inside import_module("...") strings must follow.
+    text = text.replace('import_module("myatry.', f'import_module("{package}.')
     return text
 
 
@@ -133,6 +135,10 @@ def main():
             status = "needs_review" if target_sha != record.get("target_sha") else "in_sync"
         elif record.get("target_sha") == target_sha:
             status = "applied_update"
+            if record.get("status") == "needs_review":
+                # The target drift was never resolved; writing would clobber
+                # target-side adaptations. Manual resolution required.
+                status = "needs_review"
         else:
             status = "needs_review"
 

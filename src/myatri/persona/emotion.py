@@ -12,6 +12,10 @@ from myatri._vendor.emotional_memory import lerp_pad, pad_distance, regress_pad,
 from myatri.contracts import Proposal, Record, TemporaryEntry, digest, parse_timestamp
 from myatri.contracts.emotion import EmotionAppraisal, EmotionConfig, PAD
 
+#: 同一次心情变化的含义句只在变化后的这个窗口内随上下文提供（秒）。
+#: 取情绪半衰期的一半：一段对话内足够说一次，之后不再反复提醒。
+MEANING_FRESH_SECONDS = 2700
+
 
 class EmotionState:
     def __init__(self, store, config=None):
@@ -111,9 +115,21 @@ class EmotionState:
         # A historical appraisal label is not an eternal current emotion.
         distance = pad_distance(PAD.model_validate(state["affect"]).vector(), self.config.baseline.vector())
         if distance >= 0.05 and state["last_appraisal"]:
-            payload["last_event_meaning"] = state["last_appraisal"]["meaning"][:120]
+            # 同一次变化只说一次：含义句只在变化发生后的短时间窗口内随上下文提供，
+            # 之后情绪数据仍在，但不再反复提醒这一件事。
+            observed = state.get("last_observed_at")
+            try:
+                age = None if not observed else (
+                    datetime.fromisoformat(state["evaluated_at"])
+                    - datetime.fromisoformat(observed)).total_seconds()
+            except ValueError:
+                age = None
+            if age is not None and age <= MEANING_FRESH_SECONDS:
+                payload["last_event_meaning"] = state["last_appraisal"]["meaning"][:120]
         prefix = ("\n情绪连续性（暂定数据，可调整；不改变事实、人格或工具权限，不要求生气或讨好）：\n"
-                  "可在语气、用词和节奏上自然体现当前情绪与心境，不直接报数值，不刻意表演情绪。\n")
+                  "可在语气、用词和节奏上自然体现当前情绪与心境，不直接报数值，不刻意表演情绪。\n"
+                  "last_event_meaning 是最近一次心情变化的含义：只在第一次开口时可以自然带出一点，"
+                  "同一次变化不要在后续轮次反复提起。\n")
         rendered = json.dumps(payload, ensure_ascii=False)
         if len((prefix + rendered).encode("utf-8")) > max_bytes:
             payload.pop("last_event_meaning", None)

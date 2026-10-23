@@ -230,6 +230,9 @@ class Bridge:
             db.execute("""CREATE TABLE IF NOT EXISTS proactive_sources (
                 scope TEXT NOT NULL,candidate_id TEXT NOT NULL,delivery_id TEXT NOT NULL,
                 PRIMARY KEY(scope,candidate_id))""")
+            db.execute("""CREATE TABLE IF NOT EXISTS proactive_materials (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,scope TEXT NOT NULL,kind TEXT NOT NULL,
+                created REAL NOT NULL,topic TEXT,payload TEXT NOT NULL)""")
             self.routes = {row[0]: json.loads(row[1]) for row in db.execute("SELECT * FROM group_routes")}
             # Authenticated bot identities are legitimate summary subjects even
             # though bot replies never enter the listening window as senders.
@@ -468,7 +471,7 @@ class Bridge:
                 used += int((record.get("usage") or {}).get("total_tokens") or 0)
         return min(1.0, used / limit)
 
-    def _proactive_candidates(self, scope):
+    async def _proactive_candidates(self, scope):
         """Only sources that are genuinely unfinished or addressed to nobody."""
         now = datetime.now().astimezone()
         found = []
@@ -509,6 +512,7 @@ class Bridge:
                     break
         found.extend(self._interest_candidates(scope, now, consumed))
         found.extend(self._revive_candidates(scope, now, consumed))
+        found.extend(await self._material_candidates(scope, now, consumed))
         return found
 
     def _interest_candidates(self, scope, now, consumed):
@@ -566,6 +570,155 @@ class Bridge:
             candidate_id=revive_id, kind="group_revive", created_at=now,
             reason="群里安静很久了，也没人叫小温暖；可以自然冒个泡，比如接着以前聊过的话题找人聊聊",
             context_hash=digest([scope, revive_id]), excerpt=excerpt, source_at=last_seen)]
+
+    def _material_due(self, scope, kind, interval_minutes):
+        """到期判定：同类材料距上次扫描不足间隔则跳过；0 关闭。"""
+        if interval_minutes <= 0:
+            return False
+        with closing(sqlite3.connect(self.path)) as db:
+            row = db.execute("SELECT MAX(created) FROM proactive_materials WHERE scope=? AND kind=?",
+                             (scope, kind)).fetchone()
+        return not (row and row[0] and time.time() - row[0] < interval_minutes * 60)
+
+    def _save_material(self, scope, kind, topic, payload):
+        with closing(sqlite3.connect(self.path)) as db, db:
+            cursor = db.execute(
+                "INSERT INTO proactive_materials(scope,kind,created,topic,payload) VALUES (?,?,?,?,?)",
+                (scope, kind, time.time(), topic[:160],
+                 json.dumps(payload, ensure_ascii=False)[:8000]))
+            return cursor.lastrowid
+
+    def _web_topic_query(self, scope):
+        """从话题表选一个近期活跃、最近四次材料没用过的群内话题，拼检索词。"""
+        with closing(sqlite3.connect(self.path)) as db:
+            used = {row[0] for row in db.execute(
+                "SELECT topic FROM proactive_materials WHERE scope=? AND kind='web_curiosity' "
+                "ORDER BY id DESC LIMIT 4", (scope,))}
+        cutoff = time.time() - 86400
+        with closing(sqlite3.connect(self.topics.path)) as db:
+            rows = db.execute(
+                "SELECT topic,COUNT(*) c FROM topic_hints WHERE scope=? AND stamp>=? "
+                "GROUP BY topic ORDER BY c DESC LIMIT 8", (scope, cutoff)).fetchall()
+            fresh = [(topic, count) for topic, count in rows
+                     if topic not in used and not topic.startswith("topic_") and count >= 3]
+            if not fresh:
+                return None
+            topic = fresh[0][0]
+            term_rows = db.execute(
+                "SELECT terms FROM topic_hints WHERE scope=? AND topic=? ORDER BY stamp DESC LIMIT 10",
+                (scope, topic)).fetchall()
+        from collections import Counter
+        frequency = Counter(word for row in term_rows for word in json.loads(row[0]))
+        query = " ".join(word for word, _ in frequency.most_common(4))
+        return query.strip()[:120] or None
+
+    def _scan_web_material(self, scope):
+        """搜资料：确定性选话题，走既有搜索后端（共享该群每日配额与缓存）。"""
+        app = self.apps.get(scope)
+        if self.config.get("mode") != "live" or not self.web_enabled or app is None:
+            return None
+        query = self._web_topic_query(scope)
+        if not query:
+            return None
+        entry = self._web_tool(app.root)
+        if entry is None:
+            return None
+        _, search = entry
+        try:
+            text = search.search(query=query, max_results=3)
+        except Exception:
+            return None
+        if not str(text).strip():
+            return None
+        return self._save_material(scope, "web_curiosity", query,
+                                   {"query": query, "results": str(text)[:4000]})
+
+    async def _scan_bili_material(self, scope):
+        """刷B站：只读搜索；硬过滤（播放量/发布时间）在模型看到之前完成。
+
+        需要可选依赖 bilibili-api（uv sync --extra bili）；缺失或失败时静默跳过。
+        """
+        if self.config.get("mode") != "live":
+            return None
+        settings = self.proactive_config or {}
+        keywords = [str(k).strip() for k in settings.get("bili_scan_keywords", []) if str(k).strip()]
+        keywords = keywords or [str(k).strip() for k in settings.get("interest_keywords", []) if str(k).strip()]
+        if not keywords:
+            return None
+        try:
+            from bilibili_api.search import SearchObjectType, search_by_type
+        except Exception:
+            return None
+        with closing(sqlite3.connect(self.path)) as db:
+            done = db.execute("SELECT COUNT(*) FROM proactive_materials WHERE scope=? AND kind='bili_duty'",
+                              (scope,)).fetchone()[0]
+        keyword = keywords[done % len(keywords)]
+        min_plays = int(settings.get("bili_min_plays", 10000))
+        max_age_days = float(settings.get("bili_max_age_days", 30.0))
+        cutoff = time.time() - max_age_days * 86400
+        try:
+            result = await search_by_type(keyword, search_type=SearchObjectType.VIDEO, page=1)
+        except Exception:
+            return None
+        videos = []
+        for item in (result.get("result") or [])[:20] if isinstance(result, dict) else []:
+            try:
+                plays = int(item.get("play") or 0)
+                published = int(item.get("pubdate") or 0)
+            except (TypeError, ValueError):
+                continue
+            if plays < min_plays or published < cutoff:
+                continue
+            title = re.sub(r"<[^>]+>", "", str(item.get("title", "")))[:80]
+            videos.append({"bvid": str(item.get("bvid", ""))[:32], "title": title,
+                           "description": str(item.get("description") or "")[:160], "plays": plays})
+            if len(videos) >= 3:
+                break
+        if not videos:
+            return None
+        return self._save_material(scope, "bili_duty", keyword,
+                                   {"keyword": keyword, "videos": videos})
+
+    async def _material_candidates(self, scope, now, consumed):
+        """到期时执行只读扫描，并把每类最新一条未消费材料变成分享候选。"""
+        settings = self.proactive_config or {}
+        try:
+            if self._material_due(scope, "web_curiosity", float(settings.get("web_scan_minutes", 120.0))):
+                await asyncio.to_thread(self._scan_web_material, scope)
+        except Exception:
+            logger.info("Web material scan skipped")
+        try:
+            if self._material_due(scope, "bili_duty", float(settings.get("bili_scan_minutes", 180.0))):
+                await self._scan_bili_material(scope)
+        except Exception:
+            logger.info("Bili material scan skipped")
+        found = []
+        with closing(sqlite3.connect(self.path)) as db:
+            newest = {}
+            for kind, mid, topic, payload in db.execute(
+                    "SELECT kind,id,topic,payload FROM proactive_materials WHERE scope=? ORDER BY id DESC",
+                    (scope,)):
+                newest.setdefault(kind, (mid, topic, payload))
+        labels = {
+            "web_curiosity": "刚搜了一把自己感兴趣的资料，可以像刷到东西那样提一两句",
+            "bili_duty": "刚在B站刷到的视频，可以像群友分享那样提一下",
+        }
+        for kind, (mid, topic, payload) in newest.items():
+            candidate_id = f"material:{mid}"
+            if candidate_id in consumed or kind not in labels:
+                continue
+            data = json.loads(payload)
+            if kind == "bili_duty":
+                excerpt = "关键词：" + str(data.get("keyword", "")) + "；" + " / ".join(
+                    video["title"] + "（" + str(video["plays"]) + "播放）" for video in data.get("videos", []))
+            else:
+                excerpt = str(data.get("results", ""))
+            excerpt = excerpt[:600]
+            if excerpt.strip():
+                found.append(Candidate(candidate_id=candidate_id, kind=kind, created_at=now,
+                                       reason=labels[kind], context_hash=digest([scope, candidate_id]),
+                                       excerpt=excerpt))
+        return found
 
     async def _proactive_generate(self, *, scope, candidate, now, instruction):
         """Generate one proactive utterance without writing a human-looking turn.

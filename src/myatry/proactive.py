@@ -57,6 +57,8 @@ CANDIDATE_PRIORITY = {
     "failed_explicit": 1,
     "interesting_exchange": 2,
     "deferred_topic": 2,
+    "web_curiosity": 3,
+    "bili_duty": 3,
     "temporary_entry": 3,
     "unanswered_question": 4,
 }
@@ -82,6 +84,13 @@ DEFAULTS: dict[str, Any] = {
     "interest_burst_messages": 4,
     "interest_window_minutes": 10.0,
     "interest_keywords": [],
+    # 自发阅读材料（web_curiosity）：0 关闭；走既有搜索后端，共享每日配额与缓存。
+    "web_scan_minutes": 120.0,
+    # 自发刷B站（bili_duty）：0 关闭；需要可选依赖（uv sync --extra bili），硬过滤在模型前。
+    "bili_scan_minutes": 180.0,
+    "bili_scan_keywords": [],
+    "bili_min_plays": 10000,
+    "bili_max_age_days": 30.0,
     "budget_limit_ratio": 0.8,
     "candidate_ttl_seconds": 45.0,
 }
@@ -290,6 +299,11 @@ class ProactiveSettings:
     interest_burst_messages: int = 4
     interest_window_minutes: float = 10.0
     interest_keywords: tuple[str, ...] = ()
+    web_scan_minutes: float = 120.0
+    bili_scan_minutes: float = 180.0
+    bili_scan_keywords: tuple[str, ...] = ()
+    bili_min_plays: int = 10000
+    bili_max_age_days: float = 30.0
     budget_limit_ratio: float = 0.8
     candidate_ttl_seconds: float = 45.0
 
@@ -341,6 +355,13 @@ class ProactiveSettings:
         if (not isinstance(keywords, (list, tuple))
                 or any(not isinstance(word, str) or not word.strip() for word in keywords)):
             raise ValueError("主动发言配置 interest_keywords 必须是非空字符串数组")
+        bili_keywords = values.get("bili_scan_keywords", DEFAULTS["bili_scan_keywords"])
+        if (not isinstance(bili_keywords, (list, tuple))
+                or any(not isinstance(word, str) or not word.strip() for word in bili_keywords)):
+            raise ValueError("主动发言配置 bili_scan_keywords 必须是非空字符串数组")
+        min_plays = values.get("bili_min_plays", DEFAULTS["bili_min_plays"])
+        if isinstance(min_plays, bool) or not isinstance(min_plays, int) or min_plays < 0:
+            raise ValueError("主动发言配置 bili_min_plays 必须是非负整数")
         return cls(
             enabled=_as_flag(values, "enabled"),
             shadow_mode=_as_flag(values, "shadow_mode"),
@@ -360,6 +381,11 @@ class ProactiveSettings:
             interest_window_minutes=_as_number(values, "interest_window_minutes",
                                                minimum=1.0, maximum=60.0),
             interest_keywords=tuple(word.strip() for word in keywords),
+            web_scan_minutes=_as_number(values, "web_scan_minutes", minimum=0.0, maximum=1440.0),
+            bili_scan_minutes=_as_number(values, "bili_scan_minutes", minimum=0.0, maximum=1440.0),
+            bili_scan_keywords=tuple(word.strip() for word in bili_keywords),
+            bili_min_plays=min_plays,
+            bili_max_age_days=_as_number(values, "bili_max_age_days", minimum=1.0, maximum=3650.0),
             budget_limit_ratio=_as_number(values, "budget_limit_ratio", minimum=0.0, maximum=1.0),
             candidate_ttl_seconds=_as_number(values, "candidate_ttl_seconds", minimum=1.0),
         )

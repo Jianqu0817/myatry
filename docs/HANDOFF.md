@@ -14,6 +14,12 @@
 - 真人化机制：@唤醒跟随轮数 2-4（attention-v1 采样改 2+hash%3），且被@后最初一两轮近乎必跟（0.95）再衰减到基础概率；proactive 新增 `tick_interval_minutes`（固定观察节奏，如10分钟）、`revive_silence_hours`（群沉寂后每天至多一次主动暖场，group_revive 候选 + revive 闸门豁免）、`interest_*`（消息密度+关键词/问句 → interesting_exchange 选择性插话）；群感参考规则进 group_prompt（自然化用玩笑/口头禅，不复读不冒犯）。默认值保持保守（全关），本机配置已启用。
 - sync_repos 修复：import_module("myatry.x") 字符串路径参与包名改写；NEEDS REVIEW 配对在目标侧漂移未解决前不再被源更新覆盖。
 
+## 自发材料与情绪只说一次（2026-10-24）
+
+- 情绪"同一次变化只说一次"：last_event_meaning 只在变化后 `MEANING_FRESH_SECONDS`（2700s，情绪半衰期一半）窗口内随上下文提供，提示词同步要求不反复提起；情绪数据本身不受影响。
+- 自发阅读材料（看说分离，自发轮仍 tools=[]）：`proactive_materials` 表 + Bridge 端确定性扫描。`web_curiosity` 每 120 分钟按话题表近期群话题走既有搜索后端（共享 [bridge.web] 每日配额与缓存，仅 live）；`bili_duty` 每 180 分钟用 bilibili-api 只读搜索（可选依赖 `uv sync --extra bili`，硬过滤播放量/发布时间在模型前，缺失或 offline 静默跳过）。每类最新未消费材料变成分享候选，规则见 proactive_prompt 第 7 条（不编没看过的内容、不刷链接）。
+- 节奏：随机聊天观察 tick 改回 20 分钟；材料/视频独立间隔互不挤占。AstrBot 版未移植（独立维护仓）。
+
 ## 运行与配置
 
 - Setup.cmd安装基础环境并prepare/check；Run.cmd转发统一子命令。chat/wechat必须显式--offline或--live。

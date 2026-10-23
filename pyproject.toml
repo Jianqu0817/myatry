@@ -17,6 +17,7 @@ dependencies = [
 
 [project.optional-dependencies]
 neural = ["onnxruntime>=1.20,<2", "tokenizers>=0.21,<1"]
+bili = ["bilibili-api-python>=17"]
 
 [project.scripts]
 myatry = "myatry.__main__:main"

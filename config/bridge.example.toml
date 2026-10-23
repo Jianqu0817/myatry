@@ -78,5 +78,12 @@ revive_silence_hours = 0.0
 interest_burst_messages = 4
 interest_window_minutes = 10.0
 interest_keywords = []
+# 自发阅读材料：0 关闭。搜资料走 [bridge.web] 后端并共享其每日配额。
+web_scan_minutes = 0.0
+# 自发刷B站：0 关闭；需要可选依赖（uv sync --extra bili）。硬过滤在模型前。
+bili_scan_minutes = 0.0
+bili_scan_keywords = []
+bili_min_plays = 10000
+bili_max_age_days = 30.0
 budget_limit_ratio = 0.8
 candidate_ttl_seconds = 45.0

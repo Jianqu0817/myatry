@@ -1,6 +1,13 @@
 # 后续修改入口
 
-先读根README、AGENTS.md与ARCHITECTURE.md。新项目不需要AstrBot或旧项目源码运行；旧项目只读，来源及适配见SOURCES.json。
+先读根README、AGENTS.md与ARCHITECTURE.md。新项目不需要AstrBot或旧项目源码运行；来源及适配见SOURCES.json。**myatry 是主开发仓**：可移植改动从这里同步到兄弟仓库。
+
+## 三仓同步（scripts/sync_repos.py）
+
+- 核心 `src/myatri/**` → MYATRI 同路径（字节一致）；微信契约（wechat_versions/wechat-versions.json/升级指南/wechat_client）→ AstrBot 插件（字节一致）；应用层 `src/myatry/**` → AstrBot `src/myatri_bridge/**`（包名改写）。
+- 默认 dry-run，`--apply` 写入并更新 `docs/sync_manifest.json`；目标侧有本地适配的文件标 NEEDS REVIEW，不盲写。内核 `myatri/companion/` 只报告漂移不自动写入（CLI 适配需人工移植）。
+- 核心 src/myatri 改动不会自动到达 AstrBot 项目（它用冻结 0.2.8 wheel）；需要时按显式发布步骤重建 wheel。
+- 新增微信版本支持只改 `wechat-versions.json` + 两仓保持字节一致，流程见 `docs/微信版本升级指南.md`；`python -m myatry versions` 查看表与运行区实况。
 
 ## 运行与配置
 

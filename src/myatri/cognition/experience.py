@@ -4,7 +4,7 @@ import json
 import re
 from copy import deepcopy
 
-from myatri.contracts import Event, ModelRequest, ModelResponse, Proposal, Record, SourceSpan, digest
+from myatri.contracts import Event, ModelRequest, ModelResponse, Proposal, Record, SourceSpan, digest, is_human_message
 from myatri.prompts import load_prompt
 from myatri.providers import BudgetExceeded
 from .materials import json_bytes, prefix_bytes, select_materials
@@ -250,7 +250,7 @@ class ExperienceOrganizer:
         item["properties"]["message_ref"] = {"type": "string"}
         groups, current = [], []
         for message in messages:
-            if message.payload.get("role") != "user":
+            if not is_human_message(message):
                 raise ValueError("batch memory only accepts user messages")
             source = _group_source(message)
             for start, end, fragment in message_windows(message):
@@ -390,7 +390,7 @@ class ExperienceOrganizer:
         return {"events": results}, checkpoints
 
     async def propose(self, message: Record, *, fixture: dict | None = None, extraction=None) -> Proposal:
-        if message.record_kind != "raw_message" or message.payload.get("role") != "user":
+        if not is_human_message(message):
             raise ValueError("only user raw messages enter A1; role output is not external evidence")
         snapshot = self.store.snapshot()
         existing = self.store.list_records("event", snapshot=snapshot)

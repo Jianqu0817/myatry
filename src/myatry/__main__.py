@@ -7,10 +7,10 @@ from pathlib import Path
 def parser():
     root = argparse.ArgumentParser(prog="python -m myatry")
     commands = root.add_subparsers(dest="command", required=True)
-    for name in ("prepare", "check", "bind", "chat", "wechat"):
+    for name in ("prepare", "check", "bind", "chat", "wechat", "versions"):
         command = commands.add_parser(name)
         command.add_argument("--config", type=Path, default=Path("config/bridge.local.toml"))
-        if name in {"prepare", "check", "bind", "wechat"}:
+        if name in {"prepare", "check", "bind", "wechat", "versions"}:
             command.add_argument("--wechat-config", type=Path)
         if name in {"chat", "wechat"}:
             mode = command.add_mutually_exclusive_group(required=True)
@@ -28,7 +28,7 @@ def main(argv=None):
     args = parser().parse_args(argv)
     from . import launch
     try:
-        if args.command in {"prepare", "check"}:
+        if args.command in {"prepare", "check", "versions"}:
             return getattr(launch, args.command)(args)
         asyncio.run(getattr(launch, args.command)(args))
     except KeyboardInterrupt:

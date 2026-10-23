@@ -6,7 +6,7 @@ import json
 import re
 import uuid
 from datetime import datetime, timezone
-from typing import Any, Literal, Protocol
+from typing import Any, Literal, Protocol, get_args
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -51,6 +51,11 @@ KINDS = {"raw_message", "event", "interpretation", "reflection", "theme",
          "persona_change", "attention_item", "summary", "cognitive_run", "edge",
          "cluster_snapshot", "index_generation", "usage", "emotion_appraisal", "emotion_retraction"}
 
+# author_kind 的合法取值。其中 self_initiated 表示“机器人自发起话题”的合成轮次：
+# 该轮 payload.role 仍可能是 user，但它不是人类输入，不得充当人类证据。
+AuthorKind = Literal["human", "system", "model", "human_import", "self_initiated"]
+AUTHOR_KINDS: frozenset[str] = frozenset(get_args(AuthorKind))
+
 
 class Record(Contract):
     record_id: str = Field(pattern=r"^[A-Za-z0-9_-]{1,160}$")
@@ -60,7 +65,10 @@ class Record(Contract):
     agent_id: str = Field(default="atri", min_length=1)
     user_id: str = Field(default="local", min_length=1)
     created_at: str = Field(default_factory=utcnow)
-    author_kind: Literal["human", "system", "model", "human_import"] = "system"
+    # 作者归属决定记录能否充当人类证据：human 是唯一的人类输入来源；
+    # human_import 为人工导入材料；model 为带 generator 元数据的模型产物；
+    # system 为系统/程序写入；self_initiated 为机器人自发起的合成轮次（非人类）。
+    author_kind: AuthorKind = "system"
     source_refs: list[str] = Field(default_factory=list)
     supersedes_revision: int | None = None
     generator: dict[str, Any] | None = None
@@ -294,3 +302,9 @@ class JobSpec(Contract):
     def idempotency_key(self):
         return digest({"role": self.role, "refs": sorted(self.input_refs),
                        "prompt": self.prompt_version, "targets": self.target_versions, "payload": self.payload})
+
+
+def is_human_message(record) -> bool:
+    """Synthetic proactive input is never evidence of something a person said."""
+    return (record.record_kind == "raw_message" and record.payload.get("role") == "user"
+            and record.author_kind in {"human", "human_import"})

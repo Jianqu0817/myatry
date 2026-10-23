@@ -4,7 +4,7 @@ from __future__ import annotations
 import asyncio
 import json
 
-from myatri.contracts import JobSpec, Proposal, digest
+from myatri.contracts import JobSpec, Proposal, digest, is_human_message
 from myatri.cognition.experience import ExperienceOrganizer
 from myatri.cognition.emotion import EmotionAgent
 from myatri.cognition.reflection import ReflectionAgent
@@ -36,7 +36,7 @@ class Maintenance:
 
     def pending(self):
         raw = self.app.store.list_records("raw_message")
-        users = [r for r in raw if r.payload.get("role") == "user"]
+        users = [r for r in raw if is_human_message(r)]
         cursor = self.app.queue.get_meta("maintenance_cursor")
         if cursor:
             positions = [i for i, r in enumerate(users) if r.ref == cursor]
@@ -119,7 +119,7 @@ class Maintenance:
             # newer batches advanced the ordinary scheduling cursor.
             deferred_refs = self._deferred_refs().intersection(allowed)
             pending_refs = {m.ref for m in users}
-            users = [r for r in raw if r.payload.get("role") == "user"
+            users = [r for r in raw if is_human_message(r)
                      and (r.ref in pending_refs or r.ref in deferred_refs)]
             messages = [r for r in users if r.ref in allowed]
             pending_deep = self.app.queue.get_meta("deep_pending_messages", [])
@@ -232,7 +232,7 @@ class Maintenance:
             # The cursor advances only after memory, state, emotion and review
             # dependencies completed or explicitly deferred with durable runs.
             self.app.store.flush_projection()
-            positions = {r.ref: i for i, r in enumerate(raw) if r.payload.get("role") == "user"}
+            positions = {r.ref: i for i, r in enumerate(raw) if is_human_message(r)}
             old_cursor = self.app.queue.get_meta("maintenance_cursor")
             cursor = max([r.ref for r in messages] + ([old_cursor] if old_cursor else []),
                          key=lambda ref: positions[ref], default=None)

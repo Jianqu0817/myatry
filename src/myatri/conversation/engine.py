@@ -100,13 +100,21 @@ class Conversation:
         if protocol_store:
             self.context.budget.anchor = protocol_store.get_meta("context_token_anchor")
 
-    async def respond(self, text, *, message_id=None, metadata=None):
+    async def respond(self, text, *, message_id=None, metadata=None, author_kind: str | None = None):
+        """处理一轮输入并返回角色答复。
+
+        ``author_kind`` 只标记本轮输入的作者归属，并原样透传给
+        ``append_message``；机器人自发起话题的合成轮次应传
+        ``self_initiated``，以免被误记为人类证据。答复记录不随之改变，
+        仍按默认规则记为 ``system``。
+        """
         async with self._lock:
             if metadata is not None and not isinstance(metadata, dict):
                 raise ValueError("message metadata must be a dict")
             if metadata and set(metadata) & {"role", "content", "message_id"}:
                 raise ValueError("message metadata cannot override the conversation identity")
-            raw = self.store.append_message("user", text, message_id=message_id, **(metadata or {}))
+            raw = self.store.append_message("user", text, message_id=message_id,
+                                            author_kind=author_kind, **(metadata or {}))
             try:
                 answer = self.store.get_record("answer_" + raw.record_id)
             except KeyError:

@@ -127,6 +127,9 @@ class Application:
         return await self.maintenance.run(spec.input_refs, reason=spec.payload.get("reason", "turns"))
 
     def enqueue_message(self, message, fixture=None):
+        from myatri.contracts import is_human_message
+        if not is_human_message(message):
+            return None
         self.queue.set_meta("last_activity", message.created_at)
         if self.maintenance.turns:
             return None

@@ -18,7 +18,7 @@ uv sync --frozen --python 3.12
 
 ## 微信与第一次绑定
 
-外部 WeChatAgent reader/native 必须已经安装、配置且匹配微信 **4.1.10.27**。本项目只保留 HTTP 契约，不提供完整微信客户端、DLL、reader 或上游 Node 环境。使用外部组件自己的安装/启动入口，亲自完成微信登录；启动前先正常退出旧项目启动器，端口冲突会直接报错。
+外部 WeChatAgent reader/native 必须已经安装、配置，且匹配微信版本在本项目兼容表内（当前为 **4.1.10.27**；权威数据源 `src/myatry/wechat-versions.json`，运行 `.venv/Scripts/python.exe -m myatry versions` 可查看表与运行区实况）。新微信版本的接入流程见 `docs/微信版本升级指南.md`；上游未发布匹配 hook 前，安装更新的微信会直接断链。本项目只保留 HTTP 契约，不提供完整微信客户端、DLL、reader 或上游 Node 环境。使用外部组件自己的安装/启动入口，亲自完成微信登录；启动前先正常退出旧项目启动器，端口冲突会直接报错。
 
 编辑 `config/wechatagent.local.toml`，把 `project_dir` 指向实际外部运行区（绝对路径或相对本项目路径均可），填写准确 `group_name`、`bot_nickname`。该目录应有 `state/wechat-io-config.json` 和 `state/hook/native-token.txt`；已有不同相对路径时修改 `io_config/native_token`。保留外部账号配置与令牌，不复制到源码，也不把运行区限制在旧项目 `var`。
 

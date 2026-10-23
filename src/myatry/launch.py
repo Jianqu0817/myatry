@@ -84,6 +84,58 @@ def engine_for(root, settings, mode):
     return engine
 
 
+def versions(args):
+    from pathlib import Path
+    from urllib.parse import urlsplit
+
+    from .wechat_versions import SUPPORTED, TABLE_FILE, UPGRADE_GUIDE
+    print(f"微信兼容表：{TABLE_FILE.name}；升级指南：{UPGRADE_GUIDE}")
+    for spec in SUPPORTED.values():
+        line = f"- 微信 {spec.wechat_version} · WeChatAgent {spec.wechatagent_runtime} · {spec.client_dir}"
+        if spec.notes:
+            line += f" · {spec.notes}"
+        print(line)
+    file = wechat_file(args)
+    if not file.is_file():
+        print("未找到微信本地配置；跳过运行区实况。")
+        return
+    data = tomllib.loads(file.read_text(encoding="utf-8-sig"))["wechatagent"]
+    directory = Path(data.get("project_dir", ""))
+    if not directory:
+        print("微信本地配置缺少 project_dir；跳过运行区实况。")
+        return
+    if not directory.is_absolute():
+        directory = file.resolve().parent.parent / directory
+    build = directory / "state/hook/native/build.json"
+    if build.is_file():
+        record = json.loads(build.read_text(encoding="utf-8-sig"))
+        target = record.get("targetVersion")
+        state = "在表内" if target in SUPPORTED else "不在表内"
+        print(f"运行区 hook 构建：targetVersion={target}（{state}）integration={record.get('integration')}")
+    else:
+        print("运行区缺少 state/hook/native/build.json。")
+    hook_root = directory / "state/hook"
+    if hook_root.is_dir():
+        clients = sorted(path.name for path in hook_root.glob("wechat-*") if path.is_dir())
+        print("客户端目录：" + ("、".join(clients) if clients else "无"))
+    token_file = directory / data.get("native_token", "state/hook/native-token.txt")
+    url = data.get("native_url", "http://127.0.0.1:30001")
+    if token_file.is_file() and urlsplit(url).hostname == "127.0.0.1":
+        import httpx
+
+        token = token_file.read_text(encoding="ascii").strip()
+        try:
+            response = httpx.get(url.rstrip("/") + "/WeChatAgent/health",
+                                 headers={"Authorization": "Bearer " + token},
+                                 timeout=2, trust_env=False)
+            version = response.json().get("version")
+            state = "在表内" if version in SUPPORTED else "不在表内"
+            print(f"在线 hook：{version}（{state}）")
+        except (httpx.RequestError, ValueError):
+            print("微信 hook 未在线。")
+    print("以上为只读诊断：未连接 reader、未发送消息、未修改任何文件。")
+
+
 async def chat(args):
     from .local_chat import chat as terminal_chat, existing_channels, local_message
     root, settings, state = read_settings(args.config)

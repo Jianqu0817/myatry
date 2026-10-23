@@ -1,6 +1,7 @@
-"""Loopback-only client for the WeChatAgent 0.3.9 reader/native contract.
+"""Loopback-only client for the WeChatAgent reader/native contract.
 
 Implemented from the published HTTP contract; no upstream Hook code is bundled.
+Supported WeChat client versions come from wechat_versions.SUPPORTED.
 """
 
 from __future__ import annotations
@@ -17,8 +18,8 @@ from urllib.parse import urlsplit
 
 import httpx
 
+from .wechat_versions import UPGRADE_GUIDE, spec_for, supported_versions
 
-SUPPORTED_VERSION = "4.1.10.27"
 RECEIPT_CLOCK_SKEW_SECONDS = 10
 logger = logging.getLogger(__name__)
 
@@ -168,7 +169,11 @@ class NativeClient:
             or native.get("backend") != "wechat-hook"
         ):
             raise NotReady("REVIEWED_HOOK_BUILD_REQUIRED")
-        if native.get("version") != SUPPORTED_VERSION:
+        if spec_for(native.get("version")) is None:
+            logger.warning(
+                "微信 hook 版本 %r 不在兼容表 %s 中；升级流程见 %s",
+                native.get("version"), supported_versions(), UPGRADE_GUIDE,
+            )
             raise NotReady("HOOK_VERSION_MISMATCH")
         if native.get("startupState", "ready") != "ready":
             raise NotReady("HOOK_INITIALIZATION_PENDING")

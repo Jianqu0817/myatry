@@ -21,7 +21,7 @@ from contextlib import closing, contextmanager
 from typing import Iterator
 import uuid
 
-from myatri.contracts import Event, Record, SourceSpan
+from myatri.contracts import AUTHOR_KINDS, Event, Record, SourceSpan
 from myatri._vendor.letta import atomic_write
 
 
@@ -412,18 +412,38 @@ class ArchiveStore:
             return [str(error)]
         return []
 
-    def append_message(self, role: str, content: str, message_id: str | None = None, **metadata: object) -> Record:
+    def append_message(
+        self,
+        role: str,
+        content: str,
+        message_id: str | None = None,
+        *,
+        author_kind: str | None = None,
+        **metadata: object,
+    ) -> Record:
+        """追加一条原始消息记录。
+
+        ``author_kind`` 为 None 时保持原有行为：``user`` 记为 ``human``，
+        其余角色记为 ``system``。显式传值时使用调用方给出的归属，但必须是
+        契约层已定义的取值；其中 ``self_initiated`` 表示机器人自发起的合成
+        轮次——它不是人类输入，不得被当成人类证据。归属只写入 Record 信封，
+        不进入 payload，因此默认调用产生的记录内容完全不变。
+        """
+        resolved = ("human" if role == "user" else "system") if author_kind is None else author_kind
+        if resolved not in AUTHOR_KINDS:
+            raise ArchiveError(f"Unknown author_kind: {resolved!r}")
         if message_id:
             try:
                 old = self.get_record(message_id)
             except KeyError:
                 pass
             else:
-                if old.record_kind != "raw_message" or old.body_markdown != content or old.payload != {"role": role, **metadata}:
+                author_changed = author_kind is not None and old.author_kind != resolved
+                if author_changed or old.record_kind != "raw_message" or old.body_markdown != content or old.payload != {"role": role, **metadata}:
                     raise IdempotencyError("Message ID reused with different content")
                 return old
         record = Record(record_id=message_id or f"msg_{uuid.uuid4().hex}", revision=1, record_kind="raw_message",
-                        agent_id=self.agent_id, user_id=self.user_id, author_kind="human" if role == "user" else "system",
+                        agent_id=self.agent_id, user_id=self.user_id, author_kind=resolved,
                         body_markdown=content, payload={"role": role, **metadata})
         try:
             self.commit([record], f"message:{record.record_id}")
@@ -431,7 +451,8 @@ class ArchiveStore:
             # A simultaneous append may publish the same message after our
             # initial read. Compare semantic content rather than generated time.
             old = self.get_record(record.record_id)
-            if old.record_kind != "raw_message" or old.body_markdown != content or old.payload != record.payload:
+            author_changed = author_kind is not None and old.author_kind != resolved
+            if author_changed or old.record_kind != "raw_message" or old.body_markdown != content or old.payload != record.payload:
                 raise
             return old
         return record

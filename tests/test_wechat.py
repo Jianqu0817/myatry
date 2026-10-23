@@ -11,6 +11,7 @@ import pytest
 
 from myatri.app import load_config
 from myatri.providers import FixtureProvider
+from myatry import wechat_versions
 from myatry.bridge import Bridge
 from myatry.wechat import WeChatRunner
 from myatry.wechat_client import NativeClient, NotReady, Settings
@@ -145,6 +146,51 @@ async def test_harness_final_reply_polled_without_proactive_or_another_message(t
     finally:
         await runner.close()
         await bridge.close()
+
+
+def version_client(version):
+    def handler(request):
+        if request.url.path == '/api/v1/reader/status':
+            body = dict(success=True, backend='weflow-cli-nt', accountDirectory='bot_db', ownWxid='bot')
+        else:
+            body = dict(integration='WeChatAgent-1', backend='wechat-hook',
+                        version=version, databaseAccounts=['bot_db'])
+        return httpx.Response(200, json=body)
+
+    return NativeClient(Settings('http://127.0.0.1:5031', 'r' * 48,
+        'http://127.0.0.1:30001', 'a' * 64, '测试群', '小温暖'),
+        transport=httpx.MockTransport(handler))
+
+
+@pytest.mark.parametrize('version', sorted(wechat_versions.SUPPORTED))
+async def test_hook_accepts_every_table_entry(version):
+    client = version_client(version)
+    try:
+        await client.check()
+    finally:
+        await client.close()
+
+
+async def test_hook_rejects_version_outside_table():
+    client = version_client('9.9.9.9')
+    try:
+        with pytest.raises(NotReady, match='HOOK_VERSION_MISMATCH'):
+            await client.check()
+    finally:
+        await client.close()
+
+
+async def test_adding_table_entry_unlocks_version_without_code_change(monkeypatch):
+    extra = dict(wechat_versions.SUPPORTED)
+    extra['4.1.99.99'] = wechat_versions.WeChatVersionSpec(
+        wechat_version='4.1.99.99', client_dir='state/hook/wechat-4.1.99.99',
+        wechatagent_runtime='0.0.0', integration='WeChatAgent-1', backend='wechat-hook')
+    monkeypatch.setattr(wechat_versions, 'SUPPORTED', extra)
+    client = version_client('4.1.99.99')
+    try:
+        await client.check()
+    finally:
+        await client.close()
 
 
 async def test_native_auth_binding_receipt_and_unknown_single_submission():

@@ -8,20 +8,20 @@
   "bridge:attention.py": {
     "layer": "app",
     "source_sha": "8cc056ed1d2c47d22538e5ee62aabcce99ff3f8fafca61db440bcdd305738fcc",
-    "status": "applied_update",
-    "target_sha": "c6aa02ee2e229ebb08acc8b8fb08d8d7ea632bfe8027cc10ae43977c380c6b6c"
+    "status": "in_sync",
+    "target_sha": "8cc056ed1d2c47d22538e5ee62aabcce99ff3f8fafca61db440bcdd305738fcc"
   },
   "bridge:bridge.py": {
     "layer": "app",
-    "source_sha": "e8b3286b4fcdad613daec063e5d8e5ae8dd0fef2571636c502f142bb813bf3e7",
-    "status": "applied_update",
-    "target_sha": "7e3039bfcf8715ce83e13203c2918c268b1ab4daf078e03c5ab8ee241348f40d"
+    "source_sha": "858b356ba5284d2d7d8dfaee00b956f8f7a21743f875122a76c86e00e9ea88cb",
+    "status": "in_sync",
+    "target_sha": "b6de750d852fa55bc95631f79523d48b108e9a7bbf3adb391afd7e34930f3aab"
   },
   "bridge:bubbles.py": {
     "layer": "app",
-    "source_sha": "e667395c5ab92d7d0fbc0cb6bbf2b5a3a9d535f37d55c4cb321618d94c979d36",
+    "source_sha": "52de5086234c748c3b6a6d29949903288ee528891871b9dbe796f71f6713aa44",
     "status": "in_sync",
-    "target_sha": "e667395c5ab92d7d0fbc0cb6bbf2b5a3a9d535f37d55c4cb321618d94c979d36"
+    "target_sha": "52de5086234c748c3b6a6d29949903288ee528891871b9dbe796f71f6713aa44"
   },
   "bridge:claims.py": {
     "layer": "app",
@@ -73,9 +73,9 @@
   },
   "bridge:context.py": {
     "layer": "app",
-    "source_sha": "a3b104aabe5332fdcf7e8aa5c935b2f94760bfad4c9c8af0f7ef279e2132b1ce",
+    "source_sha": "12ddc00a623cecc85b2dd872c7946618bf287084829bf8968e06b7e7fa6dba57",
     "status": "in_sync",
-    "target_sha": "a3b104aabe5332fdcf7e8aa5c935b2f94760bfad4c9c8af0f7ef279e2132b1ce"
+    "target_sha": "12ddc00a623cecc85b2dd872c7946618bf287084829bf8968e06b7e7fa6dba57"
   },
   "bridge:context_read_view.py": {
     "layer": "app",
@@ -121,9 +121,9 @@
   },
   "bridge:group_prompt.py": {
     "layer": "app",
-    "source_sha": "a3bdfe9c4f7505fe1d9f3926e2f5c58bd755d9b994555b9c3ddc2591c0a71df7",
-    "status": "applied_update",
-    "target_sha": "354170c5c038b37573f4b998ad55912aba0194fb375b547832fba387ed6a8b32"
+    "source_sha": "0d92348122e1d1608f7da20aa4e6659bb64422c23594f8792c17b9d939cb8246",
+    "status": "in_sync",
+    "target_sha": "0d92348122e1d1608f7da20aa4e6659bb64422c23594f8792c17b9d939cb8246"
   },
   "bridge:harness\\computer-runner.mjs": {
     "layer": "app",
@@ -206,14 +206,14 @@
   "bridge:proactive.py": {
     "layer": "app",
     "source_sha": "11a9abfa9d336b2bce7629bc61ea620264ef51308d4b7c276764b40c59ddc59a",
-    "status": "applied_update",
-    "target_sha": "9ac556ad9a63a8cf34db8e1bb2726953329e5fa41f9b61e46114d36952874d20"
+    "status": "in_sync",
+    "target_sha": "11a9abfa9d336b2bce7629bc61ea620264ef51308d4b7c276764b40c59ddc59a"
   },
   "bridge:proactive_prompt.py": {
     "layer": "app",
-    "source_sha": "cab0e866dd356bcb901dd498da3a5227da6c36644f2e05f0ba456278b48e9026",
+    "source_sha": "9eddbe2e39e7052cf38e77d24f16bc58e476b67c952b130ec20adb9bfa9323b2",
     "status": "in_sync",
-    "target_sha": "cab0e866dd356bcb901dd498da3a5227da6c36644f2e05f0ba456278b48e9026"
+    "target_sha": "9eddbe2e39e7052cf38e77d24f16bc58e476b67c952b130ec20adb9bfa9323b2"
   },
   "bridge:prompt_data.py": {
     "layer": "app",
@@ -247,9 +247,9 @@
   },
   "bridge:reply_guard.py": {
     "layer": "app",
-    "source_sha": "050b3131bed34bebb45c10e517c6c5066ffa5ede99f25020ce21fcd72524fd0f",
+    "source_sha": "0732e79f248d94ec099b1fc7d7dbaa406081b0474002301dc7b842922a787280",
     "status": "in_sync",
-    "target_sha": "050b3131bed34bebb45c10e517c6c5066ffa5ede99f25020ce21fcd72524fd0f"
+    "target_sha": "0732e79f248d94ec099b1fc7d7dbaa406081b0474002301dc7b842922a787280"
   },
   "bridge:runtime_controls.py": {
     "layer": "app",
@@ -565,9 +565,9 @@
   },
   "core:persona\\emotion.py": {
     "layer": "core",
-    "source_sha": "93ad305101e824580658c2690d10ceeb9dce43f3ec4667343d47a3af0b917b31",
+    "source_sha": "f433a3076d59479ee2c571baed2d6420333946d4ba338fa9aadeb60988ac9119",
     "status": "in_sync",
-    "target_sha": "93ad305101e824580658c2690d10ceeb9dce43f3ec4667343d47a3af0b917b31"
+    "target_sha": "f433a3076d59479ee2c571baed2d6420333946d4ba338fa9aadeb60988ac9119"
   },
   "core:persona\\feelings.py": {
     "layer": "core",

@@ -112,7 +112,8 @@ class EmotionState:
         distance = pad_distance(PAD.model_validate(state["affect"]).vector(), self.config.baseline.vector())
         if distance >= 0.05 and state["last_appraisal"]:
             payload["last_event_meaning"] = state["last_appraisal"]["meaning"][:120]
-        prefix = "\n情绪连续性（暂定数据，可调整；不改变事实、人格或工具权限，不要求生气或讨好）：\n"
+        prefix = ("\n情绪连续性（暂定数据，可调整；不改变事实、人格或工具权限，不要求生气或讨好）：\n"
+                  "可在语气、用词和节奏上自然体现当前情绪与心境，不直接报数值，不刻意表演情绪。\n")
         rendered = json.dumps(payload, ensure_ascii=False)
         if len((prefix + rendered).encode("utf-8")) > max_bytes:
             payload.pop("last_event_meaning", None)

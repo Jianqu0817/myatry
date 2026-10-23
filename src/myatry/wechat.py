@@ -4,6 +4,7 @@ from __future__ import annotations
 import asyncio
 from datetime import datetime, timezone
 import logging
+import random
 import time
 
 import httpx
@@ -82,6 +83,24 @@ class WeChatRunner:
         finally:
             self.inflight.discard(message.key)
 
+    def typing_delay(self, text):
+        """Human-like pause before a bubble goes out.
+
+        Roughly models typing time: a short base plus a per-character cost
+        with jitter, capped; longer for long messages, never zero-jitter
+        instant. Disable with typing_delay_enabled = false.
+        """
+        settings = self.bridge.config
+        if not settings.get("typing_delay_enabled", True):
+            return 0.0
+        try:
+            base = float(settings.get("typing_delay_base_seconds", 1.5))
+            per_char = float(settings.get("typing_delay_per_char", 0.05))
+            maximum = float(settings.get("typing_delay_max_seconds", 8.0))
+        except (TypeError, ValueError):
+            return 0.0
+        return min(maximum, base + max(0, len(text)) * per_char) + random.uniform(0.0, 1.0)
+
     async def deliver(self, delivery):
         replies = delivery["reply_parts"]
         if (not isinstance(replies, list) or not 1 <= len(replies) <= 3
@@ -95,6 +114,9 @@ class WeChatRunner:
             stage = "send"
             try:
                 for index, text in enumerate(replies):
+                    pause = self.typing_delay(text)
+                    if pause > 0:
+                        await asyncio.sleep(pause)
                     started = time.monotonic()
                     stage = "send"
                     await self.client.send(text)

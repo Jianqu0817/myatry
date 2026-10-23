@@ -126,3 +126,19 @@ def test_defaults_keep_conservative_off():
     assert DEFAULTS["enabled"] is False and DEFAULTS["shadow_mode"] is True
     assert DEFAULTS["tick_interval_minutes"] == 0.0
     assert DEFAULTS["revive_silence_hours"] == 0.0
+
+
+def test_typing_delay_bounds_and_disable():
+    from types import SimpleNamespace
+    from myatry.wechat import WeChatRunner
+
+    def runner(config):
+        return WeChatRunner(SimpleNamespace(config=config), SimpleNamespace())
+
+    quick = runner({"typing_delay_enabled": True})(typing_short := None) if False else runner({"typing_delay_enabled": True})
+    for text, low, high in (("嗯", 1.5, 2.6), ("好" * 200, 8.0, 9.1)):
+        for _ in range(20):
+            delay = quick.typing_delay(text)
+            assert low <= delay <= high, (text[:5], delay)
+    off = runner({"typing_delay_enabled": False})
+    assert off.typing_delay("随便多长都可以") == 0.0

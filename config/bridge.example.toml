@@ -12,6 +12,11 @@ recent_context_messages = 100 # Includes the current message and confirmed bot r
 dialogue_turns = 80 # Keep complete confirmed conversations separately from the listening window.
 cold_retention_days = 0 # Optional local compressed originals; 0 keeps the existing 200-message policy.
 random_reply_ttl_seconds = 45 # Expire delayed random interjections before delivery.
+# 拟人打字停顿：每段发出前 base + 每字符时长，封顶后加抖动；false 关闭。
+typing_delay_enabled = true
+typing_delay_base_seconds = 1.5
+typing_delay_per_char = 0.05
+typing_delay_max_seconds = 8.0
 memory_review_enabled = true # One support check per summary containing personal claims, never per chat reply.
 owner_id = "" # Set a stable account ID locally; names alone do not authenticate anyone.
 owner_name = ""

@@ -46,7 +46,7 @@ def event(text='你好', **updates):
 
 def make_bridge(tmp_path, *, computer=False):
     provider = FixtureProvider([{'content': '第一段回复。\n第二段回复。'}] * 4)
-    config = {'project_root': str(tmp_path), 'mode': 'live' if computer else 'offline',
+    config = {'project_root': str(tmp_path), 'typing_delay_enabled': False, 'mode': 'live' if computer else 'offline',
               'allowed_groups': ['xiaowennuan-wechat|room@chatroom'],
               'owner_id': 'owner', 'random_reply_probability': 0,
               'quality_guard_enabled': False, 'proactive': {'enabled': False}}

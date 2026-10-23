@@ -1,0 +1,5 @@
+[schedule]
+timezone = "Asia/Shanghai"
+period_hours = 3
+night_hour = 2
+idle_minutes = 90

@@ -1,0 +1,16 @@
+.venv/
+.model-desk/
+var/
+dist/
+__pycache__/
+.pytest_cache/
+.pytest-*/
+.ruff_cache/
+*.pyc
+*.egg-info/
+config/*.local.toml
+config/harness/*.local.json
+.env
+.env.*
+*-token.txt
+*.key

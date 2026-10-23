@@ -1,0 +1,69 @@
+[bridge]
+host = "127.0.0.1"
+port = 8766
+mode = "offline"
+allowed_groups = [] # Exact "platform instance ID|group ID" pairs.
+cooldown_seconds = 8
+random_reply_probability = 0.10 # Per new message; keywords and @ bypass this draw and cooldown.
+# After a mention/name wake, attend to the next 1-4 human messages in this group (10 min expiry).
+attention_followup_enabled = true
+attention_reply_probability = 0.75
+recent_context_messages = 100 # Includes the current message and confirmed bot replies.
+dialogue_turns = 80 # Keep complete confirmed conversations separately from the listening window.
+cold_retention_days = 0 # Optional local compressed originals; 0 keeps the existing 200-message policy.
+random_reply_ttl_seconds = 45 # Expire delayed random interjections before delivery.
+memory_review_enabled = true # One support check per summary containing personal claims, never per chat reply.
+owner_id = "" # Set a stable account ID locally; names alone do not authenticate anyone.
+owner_name = ""
+token_file = "var/bridge-token.txt"
+state_root = "var/groups"
+persona_file = "config/persona/persona.md"
+engine_config = "config/engine.toml"
+
+# Live mode is a later explicit choice; the model key stays in Windows credentials.
+# Configure the WeChat adapter separately before using live mode.
+capture_requests = false
+
+# 联网搜索（默认关闭）。开启后每个群独立一个 web.sqlite3 作为缓存与日限额账本。
+# 默认直连 DeepSeek Search API，复用聊天凭据，不需要 Node 或辅助模型请求。
+[bridge.web]
+enabled = false
+backend = "deepseek-api"
+# 只有显式 backend = "dsh" 时才需要 node_path / bin_path，旧只读封装保留。
+timeout_seconds = 25
+max_results = 3
+daily_limit = 40
+cache_ttl_hours = 24
+
+# First-stage computer actions: only a separately pinned owner account in live mode.
+# Set the same stable owner_id as [bridge], never a display name. Local paths only.
+[bridge.computer]
+enabled = false
+# Separate goal-driven execution LLM; shares the normal daily ledger.
+agent_enabled = false
+permission_profile = "full" # Current Windows account; no path/application/command allowlist.
+native_config = "config/harness/executor.local.json"
+owner_id = ""
+node_path = ""
+runtime_root = ""
+
+# Finite repair of known maintenance failures, using the original shared model budget.
+# Runtime window settings override this startup default and persist locally.
+[bridge.recovery]
+enabled = true
+
+# 主动发言（默认关闭，且默认影子模式：只生成草稿、不发送）。
+# 主动轮不写 role="user" 记录，因此不会进入人类证据链。
+[bridge.proactive]
+enabled = false
+shadow_mode = true
+kill_switch_path = "var/KILL_PROACTIVE"
+active_start = "09:00"
+active_end = "23:30"
+min_interval_minutes = 20.0
+max_interval_minutes = 90.0
+speech_cooldown_minutes = 15.0
+daily_limit = 10
+group_silence_hours = 2.0
+budget_limit_ratio = 0.8
+candidate_ttl_seconds = 45.0

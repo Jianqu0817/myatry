@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>小温暖 · 实际上下文</title>
+<style>
+:root{color-scheme:dark;font:15px/1.6 system-ui,"Microsoft YaHei",sans-serif;background:#10151c;color:#e7edf5}
+*{box-sizing:border-box}body{max-width:1240px;margin:30px auto;padding:0 22px}h1{font-size:27px;margin:0 0 8px}h2{font-size:19px;margin:0 0 14px}p{margin:8px 0 18px}.muted{color:#aab9cb}.toolbar,.filters{display:flex;align-items:end;gap:12px;flex-wrap:wrap}.toolbar{position:sticky;top:0;z-index:2;background:#10151cf2;padding:14px 0;border-bottom:1px solid #344154;backdrop-filter:blur(10px)}label{display:flex;flex-direction:column;gap:5px;font-size:13px;color:#bcc9d8}.check{flex-direction:row;align-items:center;padding:9px 0;color:#e7edf5}select,input,button{font:inherit;border:1px solid #43536a;border-radius:7px;background:#192431;color:#edf2f8;padding:9px 11px;max-width:100%}button{cursor:pointer}button:hover{background:#26374a}button:disabled{opacity:.5;cursor:default}input[type=checkbox]{accent-color:#80dabb}#search{min-width:250px}.notice{padding:14px 17px;border-radius:8px;border:1px solid #516273;background:#1a2631;margin:18px 0;white-space:pre-wrap}.notice.warning{border-color:#9b7445;background:#30261a;color:#f3d3a6}.notice.error{border-color:#aa625c;background:#331f22;color:#ffc5be}.facts{display:flex;gap:10px 22px;flex-wrap:wrap;color:#afc0d2;margin:16px 0}.filters{margin:17px 0}.message{border:1px solid #354459;border-radius:10px;margin:13px 0;background:#18222e;overflow:hidden}.message summary{cursor:pointer;padding:12px 16px;background:#202e3d;font-weight:600;word-break:break-word}.message[data-role=user]{border-left:4px solid #79afdc}.message[data-role=assistant]{border-left:4px solid #7ed6b5}.message[data-role=system]{border-left:4px solid #c0a4df}.message[data-role=tool]{border-left:4px solid #d8bd7e}.body{padding:15px 17px}.body p{margin:0 0 10px}.section{border-top:1px solid #344154;margin-top:15px;padding-top:12px}.section summary{padding:4px 0;background:transparent;font-size:14px;font-weight:500}pre{font:14px/1.8 Consolas,"Microsoft YaHei",monospace;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;tab-size:2}.mini{padding:10px 12px;border:1px solid #3a485b;border-radius:7px;margin:9px 0;background:#121c26}.mini header{font-size:12px;color:#9fb2c9;margin-bottom:6px}.empty{padding:30px 0;color:#aab9cb}.status{min-height:24px;color:#9fdfc7}footer{margin:25px 0 36px;color:#aab9cb;font-size:13px}#copy-status{font-size:13px;color:#9fdfc7}[hidden]{display:none!important}
+@media(max-width:650px){body{padding:0 12px;margin-top:18px}.toolbar{position:static}#library,#search{width:100%;min-width:0}.toolbar label:first-child,.filters label:last-child{width:100%}}
+</style>
+</head>
+<body>
+<h1>小温暖 · 实际上下文</h1>
+<p><a href="http://127.0.0.1:8767/" target="_blank" rel="noopener noreferrer" style="color:#80dabb">运行监视：今日 Token、记忆、情绪与后台任务</a><span class="muted"> · 未启动时请运行 Monitor-Context.cmd。</span></p>
+<p class="muted">查看交给模型供应商前捕获的消息材料，按请求顺序完整展示；是否收到响应可查看元数据中的回执。这里不显示模型的私密推理或“内心想法”。</p>
+<div class="toolbar">
+  <label>会话库<select id="library" aria-label="选择会话库"></select></label>
+  <label>查看来源<select id="source"><option value="latest">最新实际请求捕获</option><option value="checkpoint">历史检查点</option></select></label>
+  <label>具体请求<select id="capture"><option value="">最新请求（跟随更新）</option></select></label>
+  <button id="refresh" type="button">刷新</button>
+  <label class="check"><input type="checkbox" id="auto">每5秒自动刷新</label>
+  <button id="copy" type="button" disabled>复制原始 JSON</button>
+  <span id="copy-status" role="status"></span>
+</div>
+<div class="filters" aria-label="当前会话操作">
+  <button id="reload-runtime" type="button" disabled>重载角色卡和提示词</button>
+  <button id="reset-context" type="button" disabled>清空当前上下文</button>
+  <span id="control-status" role="status" aria-live="polite">当前操作支持运行中的微信群会话。</span>
+</div>
+<p class="muted">操作作用于上方选中的群聊。清空只重置工作上下文，保留长期记忆和原始聊天记录；旧请求捕获不会被改写。</p>
+<div id="notice" class="notice" role="status">正在读取本机会话库……</div>
+<div id="status" class="status" aria-live="polite"></div>
+<div id="facts" class="facts"></div>
+<div class="filters">
+  <label>消息角色<select id="role"><option value="">全部角色</option></select></label>
+  <label>材料类别<select id="category"><option value="">全部类别</option></select></label>
+  <label>查找原文<input id="search" type="search" placeholder="搜索正文、标题或结构化资料"></label>
+  <button id="clear" type="button">清除筛选</button>
+</div>
+<p id="filter-status" class="muted"></p>
+<main id="messages"></main>
+<details id="tools" class="message" hidden><summary>本次请求提供的工具定义</summary><div class="body"><pre id="tools-body"></pre></div></details>
+<details id="metadata" class="message" hidden><summary>请求元数据与局限</summary><div class="body"><pre id="metadata-body"></pre></div></details>
+<footer>本机查看与会话管理。自动刷新默认关闭，避免阅读时页面跳动。历史检查点不会冒充当前上下文；最新捕获未启用时，需要重启机器人并等待新的模型请求。此页包含实际聊天材料，复制或分享前请自行确认范围。</footer>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const categoryNames={focus:'本轮接话重点',rules:'角色与规则',persona:'角色卡',dialogue:'完整对话',history:'历史对话',recall:'回忆材料',summary:'会话摘要',imported_history:'继承历史',state:'临时状态',group_policy_and_summary:'群规则与短期摘要',group_policy:'群聊规则',timeline_and_current:'旁听与当前消息',timeline:'旁听与当前消息',current:'当前消息',tool:'工具返回'};
+const roleNames={system:'system · 系统材料',user:'user · 用户/群消息',assistant:'assistant · 助手历史',tool:'tool · 工具返回',developer:'developer · 开发者规则'};
+const pretty=value=>typeof value==='string'?value:JSON.stringify(value,null,2);
+const timestamp=value=>{if(!value)return '未记录';const date=new Date(value);return Number.isNaN(date.getTime())?String(value):date.toLocaleString('zh-CN',{timeZone:'Asia/Shanghai',hour12:false})+'（北京时间）';};
+function node(tag,text,className){const element=document.createElement(tag);if(text!==undefined)element.textContent=String(text);if(className)element.className=className;return element;}
+let currentPayload=null;
+let libraryRows=[];
+let sequence=0;
+let timer=null;
+let controlsBusy=false;
+
+function notice(text,kind=''){const element=$('notice');element.textContent=text;element.className='notice'+(kind?' '+kind:'');}
+function setOptions(select,values,label){const previous=select.value;select.replaceChildren();const all=node('option',label);all.value='';select.appendChild(all);for(const value of values){const option=node('option',value.label);option.value=value.value;select.appendChild(option);}select.value=values.some(value=>value.value===previous)?previous:'';}
+function updateCaptures(payload){const captures=payload.metadata&&Array.isArray(payload.metadata.available_captures)?payload.metadata.available_captures:[];setOptions($('capture'),captures.map(capture=>({value:capture.key,label:timestamp(capture.captured_at)+' · '+(capture.purpose||'请求')})),'最新请求（跟随更新）');$('capture').disabled=$('source').value!=='latest';}
+function showLibraryTimes(){const row=libraryRows.find(item=>item.key===$('library').value);if(!row)return;const mode=$('source').value;if(mode==='checkpoint')notice('历史检查点模式：这是一份旧快照，不代表模型当前正在使用的上下文。\n最近检查点：'+timestamp(row.latest_checkpoint_at),'warning');else if(!row.capture_available)notice('尚无最新实际请求捕获。请重启更新后的机器人，并等待一条新回复或模型请求，再刷新本页。\n历史检查点可单独查看，但不会当作当前上下文。','warning');}
+
+function updateControls(){$('library').disabled=controlsBusy;const selected=libraryRows.find(row=>row.key===$('library').value);const enabled=selected?.runtime_controls===true&&!controlsBusy;$('reload-runtime').disabled=!enabled;$('reset-context').disabled=!enabled;if(!controlsBusy&&selected&&!Object.prototype.hasOwnProperty.call(selected,'runtime_controls'))$('control-status').textContent='查看器后台仍是旧版，请关闭旧8768查看器后重新运行 View-Context.cmd；仅刷新网页不会更新后台。';else if(!controlsBusy&&!selected?.runtime_controls)$('control-status').textContent='当前操作支持运行中的微信群会话；私聊请重新启动对应窗口。';}
+async function runtimeControl(action){if(controlsBusy)return;const library=$('library').value;const selected=libraryRows.find(row=>row.key===library);if(!selected?.runtime_controls)return;if(action==='clear-context'&&!window.confirm('清空选中群聊的当前工作上下文？长期记忆和原始聊天记录都会保留。'))return;controlsBusy=true;updateControls();$('control-status').textContent='正在应用，请稍候……';try{const response=await fetch('/api/admin/'+action,{method:'POST',headers:{'Content-Type':'application/json','X-Context-Control':'1'},body:JSON.stringify({library})});const result=await response.json();if(!response.ok||result.ok!==true)throw Error(result.error||'操作未完成');$('control-status').textContent=action==='reload'?'已重新加载角色卡和提示词，下一次回复生效。下方仍是此前捕获的请求。':'已清空当前工作上下文，长期记忆和原始聊天记录保留。下方仍是上次请求快照，新请求后刷新查看。';}catch(error){$('control-status').textContent='操作未完成：'+error.message;}finally{controlsBusy=false;updateControls();}}
+function structuredSection(label,value){const details=node('details',undefined,'section');details.appendChild(node('summary',label));const body=node('pre',pretty(value));details.appendChild(body);return details;}
+function parsedTimeline(parsed){if(!parsed||typeof parsed!=='object'||!Array.isArray(parsed.recent_messages))return null;const details=node('details',undefined,'section');details.appendChild(node('summary','逐条查看近期群消息（实际发送给模型的信封内容保留在上方）'));for(const message of parsed.recent_messages){const card=node('section',undefined,'mini');const sender=message.sender_name||message.sender_id||'未标明发言者';card.appendChild(node('header',sender+' · '+timestamp(message.sent_at)));card.appendChild(node('pre',typeof message.text==='string'?message.text:pretty(message)));details.appendChild(card);}return details;}
+function messageCard(message,order){const card=node('details',undefined,'message');card.open=true;card.dataset.role=String(message.role||'unknown');const position=Number.isInteger(message.index)?message.index:order;const header=node('summary',(order+1)+' · '+(message.role||'unknown')+' · '+(categoryNames[message.category]||message.category||'未分类')+(message.title?' · '+message.title:''));card.appendChild(header);const body=node('div',undefined,'body');body.appendChild(node('p','请求位置 '+(order+1)+' · 原记录 index='+position,'muted'));body.appendChild(node('pre',typeof message.content==='string'?message.content:pretty(message.content)));if(message.tool_call_id)body.appendChild(node('p','tool_call_id: '+message.tool_call_id,'muted'));if(message.tool_calls)body.appendChild(structuredSection('查看本条工具调用原始数据',message.tool_calls));if(message.parsed!==undefined){const timeline=parsedTimeline(message.parsed);if(timeline)body.appendChild(timeline);body.appendChild(structuredSection('查看解析后的完整资料（不替代原始正文）',message.parsed));}if(message.selection!==undefined)body.appendChild(structuredSection('本条材料的选择信息',message.selection));card.appendChild(body);return card;}
+
+function renderMessages(){const container=$('messages');container.replaceChildren();if(!currentPayload)return;const messages=Array.isArray(currentPayload.messages)?currentPayload.messages:[];const role=$('role').value,category=$('category').value,query=$('search').value.trim().toLocaleLowerCase();let shown=0;messages.forEach((message,index)=>{if(role&&message.role!==role)return;if(category&&message.category!==category)return;if(query&&!pretty({title:message.title,content:message.content,parsed:message.parsed,tool_calls:message.tool_calls}).toLocaleLowerCase().includes(query))return;container.appendChild(messageCard(message,index));shown++;});$('filter-status').textContent='显示 '+shown+' / '+messages.length+' 条消息。筛选只改变页面展示，不改变模型收到的材料；顺序始终保持原请求顺序。';if(!shown)container.appendChild(node('p',messages.length?'没有匹配的消息，请调整筛选。':'这份记录没有可展示的消息。','empty'));}
+function renderPayload(payload){currentPayload=payload;$('copy').disabled=false;$('copy-status').textContent='';const messages=Array.isArray(payload.messages)?payload.messages:[];setOptions($('role'),[...new Set(messages.map(message=>message.role).filter(Boolean))].map(value=>({value,label:roleNames[value]||value})),'全部角色');setOptions($('category'),[...new Set(messages.map(message=>message.category).filter(Boolean))].map(value=>({value,label:categoryNames[value]||value})),'全部类别');const checkpoint=$('source').value==='checkpoint'||payload.source==='checkpoint';const limitations=Array.isArray(payload.limitations)?payload.limitations.map(String):[];let label=checkpoint?'历史检查点：这份旧快照不是当前上下文。':'最新捕获：这是交给模型供应商前保存的请求材料，响应状态见元数据回执，不代表未来请求。';if(payload.status==='not_captured')label='尚未捕获实际请求。请重启更新后的机器人，并等待一条新回复或模型请求后刷新。';else if(payload.status&&payload.status!=='ok'&&payload.status!=='captured')label+='\n记录状态：'+payload.status;if(limitations.length)label+='\n'+limitations.join('\n');notice(label,checkpoint||payload.status==='not_captured'?'warning':'');$('facts').replaceChildren();for(const [title,value] of [['来源',checkpoint?'历史检查点':'最新请求捕获'],['捕获时间',timestamp(payload.captured_at)],['消息数',payload.message_count??messages.length],['正文字符',payload.total_chars??messages.reduce((total,message)=>total+(typeof message.content==='string'?message.content.length:0),0)],['用途',payload.purpose||'未记录'],['模型',payload.model||'未记录'],['重试序号（从0计）',payload.attempt??'未记录']])$('facts').appendChild(node('span',title+'：'+value));$('tools').hidden=!Array.isArray(payload.tools)||!payload.tools.length;$('tools-body').textContent=pretty(payload.tools||[]);$('metadata').hidden=false;$('metadata-body').textContent=pretty({trace_id:payload.trace_id,metadata:payload.metadata,limitations:payload.limitations});$('status').textContent='读取完成 · '+timestamp(new Date().toISOString());renderMessages();}
+async function readJSON(url){const response=await fetch(url,{cache:'no-store'});let payload;try{payload=await response.json();}catch{throw Error('本机接口返回了无法解析的数据。');}if(!response.ok)throw Error(typeof payload.error==='string'?payload.error:'本机查看服务返回错误（'+response.status+'）。');return payload;}
+async function loadContext(){const request=++sequence;const library=$('library').value;if(!library){currentPayload=null;$('messages').replaceChildren();$('copy').disabled=true;$('status').textContent='';notice('尚无可查看的会话库。正常启动机器人后再刷新。','warning');return;}$('refresh').disabled=true;$('status').textContent='正在读取本机记录……';showLibraryTimes();try{let url='/api/context?library='+encodeURIComponent(library)+'&source='+encodeURIComponent($('source').value);if($('source').value==='latest'&&$('capture').value)url+='&capture='+encodeURIComponent($('capture').value);const payload=await readJSON(url);if(request!==sequence)return;updateCaptures(payload);renderPayload(payload);}catch(error){if(request!==sequence)return;currentPayload=null;$('copy').disabled=true;$('messages').replaceChildren();$('facts').replaceChildren();$('tools').hidden=true;$('metadata').hidden=true;$('filter-status').textContent='';$('status').textContent='读取失败';notice('无法读取本机上下文：'+error.message+'\n请确认上下文查看服务仍在运行。','error');}finally{if(request===sequence)$('refresh').disabled=false;}}
+async function loadLibraries(){const previous=$('library').value;try{const payload=await readJSON('/api/libraries');libraryRows=Array.isArray(payload.libraries)?payload.libraries:[];$('library').replaceChildren();for(const library of libraryRows){const option=node('option',library.label||library.key);option.value=library.key;$('library').appendChild(option);}$('library').value=libraryRows.some(library=>library.key===previous)?previous:(libraryRows[0]?.key||'');updateControls();if(!currentPayload){const selected=libraryRows.find(item=>item.key===$('library').value);if(selected&&!selected.capture_available&&selected.checkpoint_available)$('source').value='checkpoint';}await loadContext();}catch(error){notice('无法读取会话库：'+error.message,'error');$('status').textContent='连接失败';}}
+function configureRefresh(){if(timer!==null)clearInterval(timer);timer=$('auto').checked?setInterval(loadContext,5000):null;}
+$('refresh').addEventListener('click',loadLibraries);
+$('reload-runtime').addEventListener('click',()=>runtimeControl('reload'));
+$('reset-context').addEventListener('click',()=>runtimeControl('clear-context'));
+$('library').addEventListener('change',()=>{$('capture').value='';$('control-status').textContent='当前操作支持运行中的微信群会话。';updateControls();loadContext();});
+$('source').addEventListener('change',loadContext);
+$('capture').addEventListener('change',loadContext);
+$('auto').addEventListener('change',configureRefresh);
+for(const id of ['role','category'])$(id).addEventListener('change',renderMessages);
+$('search').addEventListener('input',renderMessages);
+$('clear').addEventListener('click',()=>{$('role').value='';$('category').value='';$('search').value='';renderMessages();});
+$('copy').addEventListener('click',async()=>{if(!currentPayload)return;try{await navigator.clipboard.writeText(JSON.stringify(currentPayload,null,2));$('copy-status').textContent='已复制完整原始 JSON，包含筛选隐藏的消息。';}catch{$('copy-status').textContent='浏览器未允许复制，请在本机浏览器中打开本页后重试。';}});
+loadLibraries();
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "myatry"
+version = "0.2.8"
+description = "Standalone MYATRI memory and local WeChat runtime"
+requires-python = ">=3.12,<3.13"
+license-files = ["LICENSES/*"]
+dependencies = [
+  "aiohttp>=3.11.18,<4", "httpx>=0.28,<1", "igraph>=0.11,<2",
+  "jsonschema>=4.23,<5", "leidenalg>=0.10,<1", "numpy>=2,<3",
+  "pydantic>=2.10,<3", "scikit-learn>=1.5,<2", "scipy>=1.13,<1.16",
+  "tzdata>=2025.1",
+]
+
+[project.optional-dependencies]
+neural = ["onnxruntime>=1.20,<2", "tokenizers>=0.21,<1"]
+
+[project.scripts]
+myatry = "myatry.__main__:main"
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "pytest-asyncio>=0.25,<2", "ruff>=0.15,<0.16"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/myatri", "src/myatry"]

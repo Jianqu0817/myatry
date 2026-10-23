@@ -1,0 +1,1141 @@
+{
+  "source_repository": "D:\\DS_workspace\\MYATRI-AstrBot",
+  "source_head": "4428069a4f8cf46987ac2ee09af3ecf5102964cc",
+  "core": {
+    "version": "0.2.8",
+    "wheel": "vendor/myatri-0.2.8-py3-none-any.whl",
+    "sha256": "b013f28e9fb8932ccf8b997e7deabd33786a180ebe99c03f5323c99e9d47f5cc",
+    "metadata_dependencies": [
+      "httpx<1,>=0.28",
+      "igraph<2,>=0.11",
+      "jsonschema<5,>=4.23",
+      "leidenalg<1,>=0.10",
+      "numpy<3,>=2",
+      "pydantic<3,>=2.10",
+      "scikit-learn<2,>=1.5",
+      "scipy<1.16,>=1.13",
+      "tzdata>=2025.1"
+    ],
+    "neural_dependencies": [
+      "onnxruntime<2,>=1.20",
+      "tokenizers<1,>=0.21"
+    ]
+  },
+  "boundary": {
+    "included": "冻结 wheel 内 myatri 运行源码、提示词、包内资源；原桥接应用源码与静态资源；明确公开配置；wheel 携带第三方许可。",
+    "excluded": [
+      "wheel dist-info（不作为独立发行包安装）",
+      "AstrBot 框架及插件转发",
+      "旧项目 scripts/eval/locks/多环境部署",
+      "私有 *.local.* 配置、var、upstream、.venv、聊天及记忆"
+    ],
+    "uncertain_modules": "未证明无用的核心及桥接模块均保留。"
+  },
+  "files": [
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/__init__.py",
+      "dst": "src/myatri/__init__.py",
+      "sha256": "9ff3b384b5c96e6e68eb52a073e942951c7a9e90f422313e8268a034221ba99c",
+      "source_sha256": "9ff3b384b5c96e6e68eb52a073e942951c7a9e90f422313e8268a034221ba99c",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/app.py",
+      "dst": "src/myatri/app.py",
+      "sha256": "00cd9ddebd89b7436dad3620373e478e6245e622395d70a5a8dea02e178a5b46",
+      "source_sha256": "00cd9ddebd89b7436dad3620373e478e6245e622395d70a5a8dea02e178a5b46",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/credentials.py",
+      "dst": "src/myatri/credentials.py",
+      "sha256": "404efbef466cefd2d175719eab3f9a3a9287ccda87dcb0e5ef4f46fc442c62cd",
+      "source_sha256": "404efbef466cefd2d175719eab3f9a3a9287ccda87dcb0e5ef4f46fc442c62cd",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/evaluation.py",
+      "dst": null,
+      "sha256": "27acedf164580834c7ae1690b77289f222262da57c660a31af03f16de67ea58d",
+      "source_sha256": "27acedf164580834c7ae1690b77289f222262da57c660a31af03f16de67ea58d",
+      "adaptation": "删除：旧 CLI 专用合成演示与评测，应用运行代码无引用。"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/security.py",
+      "dst": "src/myatri/security.py",
+      "sha256": "448e013f0b7bca60e03ba0ae4508a37050c97dab84d1a82f4d11f07a90ba81a1",
+      "source_sha256": "448e013f0b7bca60e03ba0ae4508a37050c97dab84d1a82f4d11f07a90ba81a1",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/_vendor/__init__.py",
+      "dst": "src/myatri/_vendor/__init__.py",
+      "sha256": "6ffb17dba0bdc3fd78b692ed4b638d99689d36d141d9cb8b644d7bcef6f902ea",
+      "source_sha256": "6ffb17dba0bdc3fd78b692ed4b638d99689d36d141d9cb8b644d7bcef6f902ea",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/_vendor/amem.py",
+      "dst": "src/myatri/_vendor/amem.py",
+      "sha256": "c3c3b5d42e99ac7d0417be4a8de6ec0e9d02acb7a120bca3e98e3332045a17ca",
+      "source_sha256": "c3c3b5d42e99ac7d0417be4a8de6ec0e9d02acb7a120bca3e98e3332045a17ca",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/_vendor/emotional_memory.py",
+      "dst": "src/myatri/_vendor/emotional_memory.py",
+      "sha256": "edaa2f861055b6535af4f05aa7f3819886b447a5d8a742f6ac9639f00de23111",
+      "source_sha256": "edaa2f861055b6535af4f05aa7f3819886b447a5d8a742f6ac9639f00de23111",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/_vendor/letta.py",
+      "dst": "src/myatri/_vendor/letta.py",
+      "sha256": "8c3c90bc8f5435a4a0fa8d2ddae1a3455e2116dd0ef4dd4d2dc141b4bd62792a",
+      "source_sha256": "8c3c90bc8f5435a4a0fa8d2ddae1a3455e2116dd0ef4dd4d2dc141b4bd62792a",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/cognition/__init__.py",
+      "dst": "src/myatri/cognition/__init__.py",
+      "sha256": "3828407b698ada2c6570273688c1ca881f186b9f87db6244b9d9d049a28550b6",
+      "source_sha256": "3828407b698ada2c6570273688c1ca881f186b9f87db6244b9d9d049a28550b6",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/cognition/association.py",
+      "dst": "src/myatri/cognition/association.py",
+      "sha256": "6cff4dd722aa15e2cb9aed08b075a223dc911453c6fde0263daab7822200a857",
+      "source_sha256": "6cff4dd722aa15e2cb9aed08b075a223dc911453c6fde0263daab7822200a857",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/cognition/attribution.py",
+      "dst": "src/myatri/cognition/attribution.py",
+      "sha256": "6c8868713a6273de91b8aeeb19602e48e6515efb0781489b403d2c54e054eb55",
+      "source_sha256": "6c8868713a6273de91b8aeeb19602e48e6515efb0781489b403d2c54e054eb55",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/cognition/emotion.py",
+      "dst": "src/myatri/cognition/emotion.py",
+      "sha256": "c9fa25f9bfbb9179a6bb94f434ff5646a8d3842f45deebe989b45159e53f137b",
+      "source_sha256": "c9fa25f9bfbb9179a6bb94f434ff5646a8d3842f45deebe989b45159e53f137b",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/cognition/experience.py",
+      "dst": "src/myatri/cognition/experience.py",
+      "sha256": "aba202c088a4db66e51d9b7912900d960de3c78f5fb67cab4b3b0eef916222b1",
+      "source_sha256": "aba202c088a4db66e51d9b7912900d960de3c78f5fb67cab4b3b0eef916222b1",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/cognition/materials.py",
+      "dst": "src/myatri/cognition/materials.py",
+      "sha256": "8bbf1fad130242731ae8485ed13370213e83294bc22edcef69417b5e79d87221",
+      "source_sha256": "8bbf1fad130242731ae8485ed13370213e83294bc22edcef69417b5e79d87221",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/cognition/persona_revision.py",
+      "dst": "src/myatri/cognition/persona_revision.py",
+      "sha256": "fbeb66e5426472cc6613fec5721685ed1f69b41a0a286a1120b11770939dd8c8",
+      "source_sha256": "fbeb66e5426472cc6613fec5721685ed1f69b41a0a286a1120b11770939dd8c8",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/cognition/reflection.py",
+      "dst": "src/myatri/cognition/reflection.py",
+      "sha256": "43b4d9f6cf0acc39266749be9bf06727968b24c47bf46d433014cb9b4200ad1a",
+      "source_sha256": "43b4d9f6cf0acc39266749be9bf06727968b24c47bf46d433014cb9b4200ad1a",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/cognition/reviewer.py",
+      "dst": "src/myatri/cognition/reviewer.py",
+      "sha256": "175cc9274fad203d788d010ff043e2e55cae9943bea8f60f6c753034480274f9",
+      "source_sha256": "175cc9274fad203d788d010ff043e2e55cae9943bea8f60f6c753034480274f9",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/cognition/tasks.py",
+      "dst": "src/myatri/cognition/tasks.py",
+      "sha256": "e6bfe200c46c5cc71ec633e229498d39cae4b9ff5ca0a420df7c60db139b419e",
+      "source_sha256": "e6bfe200c46c5cc71ec633e229498d39cae4b9ff5ca0a420df7c60db139b419e",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/cognition/temporary_state.py",
+      "dst": "src/myatri/cognition/temporary_state.py",
+      "sha256": "3c09c1f77fd10969af8bb951b5e9efd76503c1cf180a9fdd10b4a3794caf5408",
+      "source_sha256": "3c09c1f77fd10969af8bb951b5e9efd76503c1cf180a9fdd10b4a3794caf5408",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/cognition/theme.py",
+      "dst": "src/myatri/cognition/theme.py",
+      "sha256": "413b6642732d4c2abb6eb5a907070d884b6519f4aa5c05aa15bae5bf9a34f335",
+      "source_sha256": "413b6642732d4c2abb6eb5a907070d884b6519f4aa5c05aa15bae5bf9a34f335",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/contracts/__init__.py",
+      "dst": "src/myatri/contracts/__init__.py",
+      "sha256": "c4aadf224e3a9a6d506191214fc083e8092c0f12d8a0b8a07afb9db82e289975",
+      "source_sha256": "c4aadf224e3a9a6d506191214fc083e8092c0f12d8a0b8a07afb9db82e289975",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/contracts/emotion.py",
+      "dst": "src/myatri/contracts/emotion.py",
+      "sha256": "c86013506b0424ad3751e154d36684d6af7beece2d835821f618bd5ccf21a121",
+      "source_sha256": "c86013506b0424ad3751e154d36684d6af7beece2d835821f618bd5ccf21a121",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/conversation/__init__.py",
+      "dst": "src/myatri/conversation/__init__.py",
+      "sha256": "e586cd24db756de8e0b47b2ee1836c2ec46188da3fda5673e5806f51e843434a",
+      "source_sha256": "e586cd24db756de8e0b47b2ee1836c2ec46188da3fda5673e5806f51e843434a",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/conversation/budget.py",
+      "dst": "src/myatri/conversation/budget.py",
+      "sha256": "ef8690f46fd419cff1f5d1b9c51637d67e399f9a6d744d5554cfd6b23eb1383e",
+      "source_sha256": "ef8690f46fd419cff1f5d1b9c51637d67e399f9a6d744d5554cfd6b23eb1383e",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/conversation/capture.py",
+      "dst": "src/myatri/conversation/capture.py",
+      "sha256": "ea855f69841681543c4a30aa8419e05e73403b6bbe11a12a95a94bf21014b8f7",
+      "source_sha256": "ea855f69841681543c4a30aa8419e05e73403b6bbe11a12a95a94bf21014b8f7",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/conversation/compaction.py",
+      "dst": "src/myatri/conversation/compaction.py",
+      "sha256": "3cffbde60184484b56af158ef66c8065ddb3d6068e3ad909c77495acb8702215",
+      "source_sha256": "3cffbde60184484b56af158ef66c8065ddb3d6068e3ad909c77495acb8702215",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/conversation/context.py",
+      "dst": "src/myatri/conversation/context.py",
+      "sha256": "0bb119cb47ac1a83b2941740de14145baae88f8391aa1551c13e61c09d96a28e",
+      "source_sha256": "0bb119cb47ac1a83b2941740de14145baae88f8391aa1551c13e61c09d96a28e",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/conversation/engine.py",
+      "dst": "src/myatri/conversation/engine.py",
+      "sha256": "35fd9a66c793d54a097dda0600081215ee53ad367528ed1b45d6ad6786016fd0",
+      "source_sha256": "35fd9a66c793d54a097dda0600081215ee53ad367528ed1b45d6ad6786016fd0",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/conversation/reply.py",
+      "dst": "src/myatri/conversation/reply.py",
+      "sha256": "e38b366dd09462893fc2d12a9e042349b1676f11f42ea18f704d02af0c14c523",
+      "source_sha256": "e38b366dd09462893fc2d12a9e042349b1676f11f42ea18f704d02af0c14c523",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/conversation/serialization.py",
+      "dst": "src/myatri/conversation/serialization.py",
+      "sha256": "dbfe6bf5beecc628b6c217d8b07fdce9224281ab7e18b180d6716947f0a064c9",
+      "source_sha256": "dbfe6bf5beecc628b6c217d8b07fdce9224281ab7e18b180d6716947f0a064c9",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/conversation/session.py",
+      "dst": "src/myatri/conversation/session.py",
+      "sha256": "4e7af8d58472bb3b31aaa9c368574018253ec7c70c02c3f7ae78713753ab6a7b",
+      "source_sha256": "4e7af8d58472bb3b31aaa9c368574018253ec7c70c02c3f7ae78713753ab6a7b",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/conversation/tool_results.py",
+      "dst": "src/myatri/conversation/tool_results.py",
+      "sha256": "7f6a6f3e4ceeabeb0e0d207733078b0e644712966114c6f7a33a8b96f20849ee",
+      "source_sha256": "7f6a6f3e4ceeabeb0e0d207733078b0e644712966114c6f7a33a8b96f20849ee",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/conversation/window.py",
+      "dst": "src/myatri/conversation/window.py",
+      "sha256": "ffda0ad6cf1536bdf0cd5769ecfa0f61876b27ae0bba2f2959776a4f6e87add6",
+      "source_sha256": "ffda0ad6cf1536bdf0cd5769ecfa0f61876b27ae0bba2f2959776a4f6e87add6",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/interfaces/__init__.py",
+      "dst": "src/myatri/interfaces/__init__.py",
+      "sha256": "44527d1fa77d3ef21f10ffbd15d2e14ba4b6be1a5d900b2405c3eb201dc2304e",
+      "source_sha256": "44527d1fa77d3ef21f10ffbd15d2e14ba4b6be1a5d900b2405c3eb201dc2304e",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/interfaces/cli.py",
+      "dst": null,
+      "sha256": "88bcafffdd7e4873f7b620126beb2633d8124aa03cc169d66abccfc3de3193f8",
+      "source_sha256": "88bcafffdd7e4873f7b620126beb2633d8124aa03cc169d66abccfc3de3193f8",
+      "adaptation": "删除：独立 myatri CLI，由新应用统一入口替代；无运行模块引用。"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/interfaces/inspect.py",
+      "dst": "src/myatri/interfaces/inspect.py",
+      "sha256": "12341003bc160a8a4b0be1f5f4b93ff337df54343929130be2b644f6447c4c7b",
+      "source_sha256": "12341003bc160a8a4b0be1f5f4b93ff337df54343929130be2b644f6447c4c7b",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/interfaces/terminal.py",
+      "dst": null,
+      "sha256": "d2a7baad718f7f667f0af8b414e76545283aca29b04c67e2945ba8d674ab7d03",
+      "source_sha256": "d2a7baad718f7f667f0af8b414e76545283aca29b04c67e2945ba8d674ab7d03",
+      "adaptation": "删除：只被删除的旧 myatri CLI 引用的输出格式工具。"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/memory/__init__.py",
+      "dst": "src/myatri/memory/__init__.py",
+      "sha256": "9729d9147e04783f590cb0c5e798e439813956bee2208516105872d79e1658b0",
+      "source_sha256": "9729d9147e04783f590cb0c5e798e439813956bee2208516105872d79e1658b0",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/memory/clustering.py",
+      "dst": "src/myatri/memory/clustering.py",
+      "sha256": "056f8d4afdef10f496a636c3e2257c4da91802fd9f0515a024ce75d96f2a3f8d",
+      "source_sha256": "056f8d4afdef10f496a636c3e2257c4da91802fd9f0515a024ce75d96f2a3f8d",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/memory/embeddings.py",
+      "dst": "src/myatri/memory/embeddings.py",
+      "sha256": "1c12e90964d34ed6554b27b1b9c188a2b1c90c31b190a8982d71c194dd992db7",
+      "source_sha256": "1c12e90964d34ed6554b27b1b9c188a2b1c90c31b190a8982d71c194dd992db7",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/memory/graph.py",
+      "dst": "src/myatri/memory/graph.py",
+      "sha256": "c38d6575f7c13a9bf3b1b2020f20655e1852b8ed27d81f13536760ae9482c330",
+      "source_sha256": "c38d6575f7c13a9bf3b1b2020f20655e1852b8ed27d81f13536760ae9482c330",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/memory/imports.py",
+      "dst": "src/myatri/memory/imports.py",
+      "sha256": "7b8f0dcbd6e0c398214f7a6ad51681c6ff44d3471eed80de41f50de78c6920ea",
+      "source_sha256": "7b8f0dcbd6e0c398214f7a6ad51681c6ff44d3471eed80de41f50de78c6920ea",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/memory/index.py",
+      "dst": "src/myatri/memory/index.py",
+      "sha256": "5075e433701518f76b250892ca39301d2a268812454f5161a1543a78f7267275",
+      "source_sha256": "5075e433701518f76b250892ca39301d2a268812454f5161a1543a78f7267275",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/memory/snapshot.py",
+      "dst": "src/myatri/memory/snapshot.py",
+      "sha256": "b26d9607fb164b170703e201121fd216ae64d6d15beb18420a7685d740e93a5f",
+      "source_sha256": "b26d9607fb164b170703e201121fd216ae64d6d15beb18420a7685d740e93a5f",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/memory/text.py",
+      "dst": "src/myatri/memory/text.py",
+      "sha256": "c27fdf1b01fa30361afa271a7beea91121d02aa97ee11980c09535f07035f2ac",
+      "source_sha256": "c27fdf1b01fa30361afa271a7beea91121d02aa97ee11980c09535f07035f2ac",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/memory/themes.py",
+      "dst": "src/myatri/memory/themes.py",
+      "sha256": "73d69449db1a373154749927b859c7e00c2befeb1ee9a5eca32b72927267f190",
+      "source_sha256": "73d69449db1a373154749927b859c7e00c2befeb1ee9a5eca32b72927267f190",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/memory/vector_index.py",
+      "dst": "src/myatri/memory/vector_index.py",
+      "sha256": "681cadac49b22966fb9a08fb6132c88a6024b0b0b5631e4a1c7d5b4793162196",
+      "source_sha256": "681cadac49b22966fb9a08fb6132c88a6024b0b0b5631e4a1c7d5b4793162196",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/persona/__init__.py",
+      "dst": "src/myatri/persona/__init__.py",
+      "sha256": "e3c481770d3fe1190779cbf030070853ec1c7a8430c09d363e68237b5556631e",
+      "source_sha256": "e3c481770d3fe1190779cbf030070853ec1c7a8430c09d363e68237b5556631e",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/persona/activation.py",
+      "dst": "src/myatri/persona/activation.py",
+      "sha256": "81e25b97e55c3e8c6e1a8c1e8e12f4826e63b85b4a390eb2ee7cca37d13f6045",
+      "source_sha256": "81e25b97e55c3e8c6e1a8c1e8e12f4826e63b85b4a390eb2ee7cca37d13f6045",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/persona/emotion.py",
+      "dst": "src/myatri/persona/emotion.py",
+      "sha256": "93ad305101e824580658c2690d10ceeb9dce43f3ec4667343d47a3af0b917b31",
+      "source_sha256": "93ad305101e824580658c2690d10ceeb9dce43f3ec4667343d47a3af0b917b31",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/persona/feelings.py",
+      "dst": "src/myatri/persona/feelings.py",
+      "sha256": "c8c05bf7b0755300dab54d8dbb2228653aaba3ac3ff3f91253f7777b2a6b3d45",
+      "source_sha256": "c8c05bf7b0755300dab54d8dbb2228653aaba3ac3ff3f91253f7777b2a6b3d45",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/persona/patch.py",
+      "dst": "src/myatri/persona/patch.py",
+      "sha256": "c03ac84d284be03ccc0387b4bc471ac30e15712f7f8cc1784f31b3f4d3786bd9",
+      "source_sha256": "c03ac84d284be03ccc0387b4bc471ac30e15712f7f8cc1784f31b3f4d3786bd9",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/persona/state.py",
+      "dst": "src/myatri/persona/state.py",
+      "sha256": "aa15b3070aa83f688b5729ebd1aee200c05a5b5b85f0c245c319c5dbc14a131a",
+      "source_sha256": "aa15b3070aa83f688b5729ebd1aee200c05a5b5b85f0c245c319c5dbc14a131a",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/persona/temporary.py",
+      "dst": "src/myatri/persona/temporary.py",
+      "sha256": "327837a64d9e493329a6ae72ec90935deab55c76ea0c6f374abd4f977a6ac5ec",
+      "source_sha256": "327837a64d9e493329a6ae72ec90935deab55c76ea0c6f374abd4f977a6ac5ec",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/prompts/__init__.py",
+      "dst": "src/myatri/prompts/__init__.py",
+      "sha256": "d8bb926780b057007c727de77e0734a4fbb1c8e874f7769f8d22e70dc8c0701d",
+      "source_sha256": "d8bb926780b057007c727de77e0734a4fbb1c8e874f7769f8d22e70dc8c0701d",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/providers/__init__.py",
+      "dst": "src/myatri/providers/__init__.py",
+      "sha256": "c668546cb9e85ee5b0096f8efb008a9fcef034ac7b71e6124749e03e65ba5269",
+      "source_sha256": "c668546cb9e85ee5b0096f8efb008a9fcef034ac7b71e6124749e03e65ba5269",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/providers/gateway.py",
+      "dst": "src/myatri/providers/gateway.py",
+      "sha256": "1042d6eff2c57cee5b317795261ae7bf9dccc76173b6b77c1fec5fc2b6dab691",
+      "source_sha256": "1042d6eff2c57cee5b317795261ae7bf9dccc76173b6b77c1fec5fc2b6dab691",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/providers/local_onnx.py",
+      "dst": "src/myatri/providers/local_onnx.py",
+      "sha256": "1125e002262955d2b11c68713713257ad546c74041f923f20985cbd29c7d2f9a",
+      "source_sha256": "1125e002262955d2b11c68713713257ad546c74041f923f20985cbd29c7d2f9a",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/retrieval/__init__.py",
+      "dst": "src/myatri/retrieval/__init__.py",
+      "sha256": "1e31c61e8c34b978d73a5ae44a1b7159b7d8b3d9a3975385d8b0523c0e93157c",
+      "source_sha256": "1e31c61e8c34b978d73a5ae44a1b7159b7d8b3d9a3975385d8b0523c0e93157c",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/retrieval/service.py",
+      "dst": "src/myatri/retrieval/service.py",
+      "sha256": "2002b2f68ab477f6d2396ea28ac016634cc77a689ac9a0a6d8da01ee072afad3",
+      "source_sha256": "2002b2f68ab477f6d2396ea28ac016634cc77a689ac9a0a6d8da01ee072afad3",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/runtime/__init__.py",
+      "dst": "src/myatri/runtime/__init__.py",
+      "sha256": "5f009c7a34a0decb4be489b391d441da2c52a76e5f21d5c8a22542792724f169",
+      "source_sha256": "5f009c7a34a0decb4be489b391d441da2c52a76e5f21d5c8a22542792724f169",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/runtime/commit.py",
+      "dst": "src/myatri/runtime/commit.py",
+      "sha256": "125e38238b20e3ae5ac3392a88a782369482a1b1adf2e25fde5cbf78afe6c867",
+      "source_sha256": "125e38238b20e3ae5ac3392a88a782369482a1b1adf2e25fde5cbf78afe6c867",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/runtime/jobs.py",
+      "dst": "src/myatri/runtime/jobs.py",
+      "sha256": "7bc401be6a41a211c26390f61396af0e1ee3901eee441faeb7689417b5b70255",
+      "source_sha256": "7bc401be6a41a211c26390f61396af0e1ee3901eee441faeb7689417b5b70255",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/runtime/maintenance.py",
+      "dst": "src/myatri/runtime/maintenance.py",
+      "sha256": "92aeb1ddc6507e0fe1feaecd377002198058238c611af4e53b85b386bf14c553",
+      "source_sha256": "92aeb1ddc6507e0fe1feaecd377002198058238c611af4e53b85b386bf14c553",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/runtime/scheduler.py",
+      "dst": "src/myatri/runtime/scheduler.py",
+      "sha256": "7d52b0a13c306269d47034fa1a8a357819f5d100c96e306e2fc4f4b67bef2ab4",
+      "source_sha256": "7d52b0a13c306269d47034fa1a8a357819f5d100c96e306e2fc4f4b67bef2ab4",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/runtime/worker.py",
+      "dst": "src/myatri/runtime/worker.py",
+      "sha256": "0c1430dae3038d95f4282a5427923621c0d95eee8acda9188cabf69d97997c78",
+      "source_sha256": "0c1430dae3038d95f4282a5427923621c0d95eee8acda9188cabf69d97997c78",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/storage/__init__.py",
+      "dst": "src/myatri/storage/__init__.py",
+      "sha256": "48ad2d98e70a7739a7bf6393c0d8d05dd4877b480ecfba6ed1e966afff865115",
+      "source_sha256": "48ad2d98e70a7739a7bf6393c0d8d05dd4877b480ecfba6ed1e966afff865115",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/storage/archive.py",
+      "dst": "src/myatri/storage/archive.py",
+      "sha256": "3124845241fa0a3c1f4c47473a25c4ca3796615eaa0f4759f9bc91bfa1b2d0da",
+      "source_sha256": "3124845241fa0a3c1f4c47473a25c4ca3796615eaa0f4759f9bc91bfa1b2d0da",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/prompts/activation/v1.md",
+      "dst": "src/myatri/prompts/activation/v1.md",
+      "sha256": "8b82a94fd7a98d8878c37cab28d6cfe68255fbb5ceefd999fe5513b28ea74f5b",
+      "source_sha256": "8b82a94fd7a98d8878c37cab28d6cfe68255fbb5ceefd999fe5513b28ea74f5b",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/prompts/association/v1.md",
+      "dst": "src/myatri/prompts/association/v1.md",
+      "sha256": "70968edd16030bbe80acb9bc9beff8f4fe9a2f6331492064a284999b9ded6c79",
+      "source_sha256": "70968edd16030bbe80acb9bc9beff8f4fe9a2f6331492064a284999b9ded6c79",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/prompts/attribution/v1.md",
+      "dst": "src/myatri/prompts/attribution/v1.md",
+      "sha256": "060a84afa258126a7b170e9b89b55dd1c99c95f6d540ff766fabce00b683bb35",
+      "source_sha256": "060a84afa258126a7b170e9b89b55dd1c99c95f6d540ff766fabce00b683bb35",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/prompts/compaction/v1.md",
+      "dst": "src/myatri/prompts/compaction/v1.md",
+      "sha256": "7312e3d19b0837fcfc9d1db7718f2b7e5c51eef57bc16eb6b7992d985068af92",
+      "source_sha256": "7312e3d19b0837fcfc9d1db7718f2b7e5c51eef57bc16eb6b7992d985068af92",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/prompts/compaction/v2.md",
+      "dst": "src/myatri/prompts/compaction/v2.md",
+      "sha256": "c427d6fc2c920663ae78d9c3b719f921a8624cc4a1f1777dbaf22763748dd9b7",
+      "source_sha256": "c427d6fc2c920663ae78d9c3b719f921a8624cc4a1f1777dbaf22763748dd9b7",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/prompts/emotion/v1.md",
+      "dst": "src/myatri/prompts/emotion/v1.md",
+      "sha256": "fc6f69a4cdb6bab2030bdd92e7099dd1698f21d365044fbe56a004ba0b320cb1",
+      "source_sha256": "fc6f69a4cdb6bab2030bdd92e7099dd1698f21d365044fbe56a004ba0b320cb1",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/prompts/experience/v1.md",
+      "dst": "src/myatri/prompts/experience/v1.md",
+      "sha256": "c78dcc39784f30e181af40c4f89bb9dfb72c7afdc85328656c5edd09e3c388f3",
+      "source_sha256": "c78dcc39784f30e181af40c4f89bb9dfb72c7afdc85328656c5edd09e3c388f3",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/prompts/persona_revision/v1.md",
+      "dst": "src/myatri/prompts/persona_revision/v1.md",
+      "sha256": "9672c82615e4543419b30f207b87dc22ce2bf391d952b37e79919bd578751dca",
+      "source_sha256": "9672c82615e4543419b30f207b87dc22ce2bf391d952b37e79919bd578751dca",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/prompts/recall/v1.md",
+      "dst": "src/myatri/prompts/recall/v1.md",
+      "sha256": "acf6b789075b15c035070889717fa4d2daaf49d184c137f7afcaa8760ae48306",
+      "source_sha256": "acf6b789075b15c035070889717fa4d2daaf49d184c137f7afcaa8760ae48306",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/prompts/reflection/v1.md",
+      "dst": "src/myatri/prompts/reflection/v1.md",
+      "sha256": "cc6eb496fe3555282f746c8bb9e60cfa2709aa842ee60dab95917ea289fc4eb5",
+      "source_sha256": "cc6eb496fe3555282f746c8bb9e60cfa2709aa842ee60dab95917ea289fc4eb5",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/prompts/reviewer/v1.md",
+      "dst": "src/myatri/prompts/reviewer/v1.md",
+      "sha256": "c36d01d2891bed66596fe7c82cdf5c90a82b2fe620881f36801310d15850451e",
+      "source_sha256": "c36d01d2891bed66596fe7c82cdf5c90a82b2fe620881f36801310d15850451e",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/prompts/temporary_state/v1.md",
+      "dst": "src/myatri/prompts/temporary_state/v1.md",
+      "sha256": "3a4289ddfffbbd797b1b49e0dc776fe468ce10264f1e111003287a33a4dd6772",
+      "source_sha256": "3a4289ddfffbbd797b1b49e0dc776fe468ce10264f1e111003287a33a4dd6772",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/prompts/temporary_state/v2.md",
+      "dst": "src/myatri/prompts/temporary_state/v2.md",
+      "sha256": "47fa169b6c1334bd8d032c4e36856bdd4e1aef4dbcc9d3eb7390a36b07109bf6",
+      "source_sha256": "47fa169b6c1334bd8d032c4e36856bdd4e1aef4dbcc9d3eb7390a36b07109bf6",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/prompts/theme/v1.md",
+      "dst": "src/myatri/prompts/theme/v1.md",
+      "sha256": "33445baeff90191740b894b1992246ce399972f6920b9dac3900350920d2803e",
+      "source_sha256": "33445baeff90191740b894b1992246ce399972f6920b9dac3900350920d2803e",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/_vendor/upstream/A-MEM-LICENSE",
+      "dst": "src/myatri/_vendor/upstream/A-MEM-LICENSE",
+      "sha256": "c8a51c83455b8afc3a11b085ce57c7b9b34c6725d6b2329ce3dd9a273f0add6d",
+      "source_sha256": "c8a51c83455b8afc3a11b085ce57c7b9b34c6725d6b2329ce3dd9a273f0add6d",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/_vendor/upstream/Emotional-Memory-LICENSE",
+      "dst": "src/myatri/_vendor/upstream/Emotional-Memory-LICENSE",
+      "sha256": "babeb375e954b7970fd93aa970528f2b939c37c2abfb8265901667fd53e3f107",
+      "source_sha256": "babeb375e954b7970fd93aa970528f2b939c37c2abfb8265901667fd53e3f107",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/_vendor/upstream/Letta-Code-LICENSE.txt",
+      "dst": "src/myatri/_vendor/upstream/Letta-Code-LICENSE.txt",
+      "sha256": "036e78b9d7dd33ae5b378fdda973b4aad7901c8d8371a0ae40fae1f6659a89d0",
+      "source_sha256": "036e78b9d7dd33ae5b378fdda973b4aad7901c8d8371a0ae40fae1f6659a89d0",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/_vendor/upstream/manifest.json",
+      "dst": "src/myatri/_vendor/upstream/manifest.json",
+      "sha256": "f511b3474534f332379d706229d49c75fafa7d9cce211bc6d0e9e70bda5aa915",
+      "source_sha256": "f511b3474534f332379d706229d49c75fafa7d9cce211bc6d0e9e70bda5aa915",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/config/defaults.toml",
+      "dst": "src/myatri/config/defaults.toml",
+      "sha256": "a993ab10d5f5215001a374600c6c00bac9b9d275fe550850bbe01342080d504a",
+      "source_sha256": "a993ab10d5f5215001a374600c6c00bac9b9d275fe550850bbe01342080d504a",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/config/live.example.toml",
+      "dst": "src/myatri/config/live.example.toml",
+      "sha256": "76aa1c781eeab78bbc831e64b3c2d46f777a17b33224da6173d97baeb1f3a34f",
+      "source_sha256": "76aa1c781eeab78bbc831e64b3c2d46f777a17b33224da6173d97baeb1f3a34f",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/config/persona_template.md",
+      "dst": "src/myatri/config/persona_template.md",
+      "sha256": "29350a3dc3dd59d865dcf5dd0655d6405048f8d0196aa46b71e56f606f1e5020",
+      "source_sha256": "29350a3dc3dd59d865dcf5dd0655d6405048f8d0196aa46b71e56f606f1e5020",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/config/schedules.toml",
+      "dst": "src/myatri/config/schedules.toml",
+      "sha256": "5c95240d95b2143f79cec521fc0d831b4c023c5664b30f83d29747b2bef6445a",
+      "source_sha256": "5c95240d95b2143f79cec521fc0d831b4c023c5664b30f83d29747b2bef6445a",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/config/personas/xiaowennuan/README.md",
+      "dst": null,
+      "sha256": "c69c17b7bc1879b2e4b9119a6e3f9a5e7b3b30f5af23203250d1f71054fe010e",
+      "source_sha256": "c69c17b7bc1879b2e4b9119a6e3f9a5e7b3b30f5af23203250d1f71054fe010e",
+      "adaptation": "删除：旧角色部署说明引用已删除的核心 CLI，不适用于统一应用入口。"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/config/personas/xiaowennuan/persona.md",
+      "dst": "src/myatri/config/personas/xiaowennuan/persona.md",
+      "sha256": "6911459f333c96d41cd1de6c5c4e05ac3b17cb88b4b2b9129bc7b67d0ae4b272",
+      "source_sha256": "6911459f333c96d41cd1de6c5c4e05ac3b17cb88b4b2b9129bc7b67d0ae4b272",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/config/personas/xiaowennuan/source.md",
+      "dst": "src/myatri/config/personas/xiaowennuan/source.md",
+      "sha256": "d245688a0ebda6bdedd1eeeae0c6962f8057290f7540ca548534bb5fb515e722",
+      "source_sha256": "d245688a0ebda6bdedd1eeeae0c6962f8057290f7540ca548534bb5fb515e722",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/config/personas/xiaowennuan/style_update_2026-10-21.md",
+      "dst": "src/myatri/config/personas/xiaowennuan/style_update_2026-10-21.md",
+      "sha256": "194374bbda21b9c1b50d5c72ea6e1f5a1a8b1143cd6cdf9edf3e41734a229197",
+      "source_sha256": "194374bbda21b9c1b50d5c72ea6e1f5a1a8b1143cd6cdf9edf3e41734a229197",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/_vendor/upstream/A-MEM-LICENSE",
+      "dst": "LICENSES/A-MEM-LICENSE",
+      "sha256": "c8a51c83455b8afc3a11b085ce57c7b9b34c6725d6b2329ce3dd9a273f0add6d",
+      "source_sha256": "c8a51c83455b8afc3a11b085ce57c7b9b34c6725d6b2329ce3dd9a273f0add6d",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/_vendor/upstream/Emotional-Memory-LICENSE",
+      "dst": "LICENSES/Emotional-Memory-LICENSE",
+      "sha256": "babeb375e954b7970fd93aa970528f2b939c37c2abfb8265901667fd53e3f107",
+      "source_sha256": "babeb375e954b7970fd93aa970528f2b939c37c2abfb8265901667fd53e3f107",
+      "adaptation": "原样"
+    },
+    {
+      "src": "vendor/myatri-0.2.8-py3-none-any.whl!/myatri/_vendor/upstream/Letta-Code-LICENSE.txt",
+      "dst": "LICENSES/Letta-Code-LICENSE.txt",
+      "sha256": "036e78b9d7dd33ae5b378fdda973b4aad7901c8d8371a0ae40fae1f6659a89d0",
+      "source_sha256": "036e78b9d7dd33ae5b378fdda973b4aad7901c8d8371a0ae40fae1f6659a89d0",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/__init__.py",
+      "dst": "src/myatry/__init__.py",
+      "sha256": "499ff1cc968d81936f4af34ed9bbced1de09bfe1134890a3c868d7977e657f0c",
+      "source_sha256": "499ff1cc968d81936f4af34ed9bbced1de09bfe1134890a3c868d7977e657f0c",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/attention.py",
+      "dst": "src/myatry/attention.py",
+      "sha256": "98972aa78c357b98aaf0206fc793dba807eec138383bb4d280302049628430d5",
+      "source_sha256": "c6aa02ee2e229ebb08acc8b8fb08d8d7ea632bfe8027cc10ae43977c380c6b6c",
+      "adaptation": "清理 AstrBot 描述，关注与去重逻辑原样。"
+    },
+    {
+      "src": "src/myatri_bridge/bridge.py",
+      "dst": "src/myatry/bridge.py",
+      "sha256": "9d40d7d12eaef699875ff456538bb4d8ee94a452c879dd900b94814cfa9c249e",
+      "source_sha256": "8cc7ed2b0cbd6166107cbd57cd2b26590d2afe4aa7be37547432cf92cf6fcc8c",
+      "adaptation": "包名替换"
+    },
+    {
+      "src": "src/myatri_bridge/bubbles.py",
+      "dst": "src/myatry/bubbles.py",
+      "sha256": "e667395c5ab92d7d0fbc0cb6bbf2b5a3a9d535f37d55c4cb321618d94c979d36",
+      "source_sha256": "e667395c5ab92d7d0fbc0cb6bbf2b5a3a9d535f37d55c4cb321618d94c979d36",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/claims.py",
+      "dst": "src/myatry/claims.py",
+      "sha256": "6d2facf72aa721e1eb5d870085df69195049323be9f483400c97dc2dc5a738db",
+      "source_sha256": "6d2facf72aa721e1eb5d870085df69195049323be9f483400c97dc2dc5a738db",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/cold_archive.py",
+      "dst": "src/myatry/cold_archive.py",
+      "sha256": "87c6bee70a48fafbb2ee44c9f4f99e4512a3d36f11f63268d4f6077f1f3e0f8c",
+      "source_sha256": "87c6bee70a48fafbb2ee44c9f4f99e4512a3d36f11f63268d4f6077f1f3e0f8c",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/computer_agent.py",
+      "dst": "src/myatry/computer_agent.py",
+      "sha256": "efdcf5abd93c5dff4184bbb7768f2bc0904cc92d03bc54ed5a22e83f449ef6a0",
+      "source_sha256": "efdcf5abd93c5dff4184bbb7768f2bc0904cc92d03bc54ed5a22e83f449ef6a0",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/computer_control.py",
+      "dst": "src/myatry/computer_control.py",
+      "sha256": "19c51273fa2c58b2e43cb53584a0dc7f49997e91db1e2270866dcc2c21526ecc",
+      "source_sha256": "19c51273fa2c58b2e43cb53584a0dc7f49997e91db1e2270866dcc2c21526ecc",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/computer_full.py",
+      "dst": "src/myatry/computer_full.py",
+      "sha256": "f3e1da98fba5341a575471e886a16b8fd14fd5bc1330977cdc5930b984915e4a",
+      "source_sha256": "f3e1da98fba5341a575471e886a16b8fd14fd5bc1330977cdc5930b984915e4a",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/computer_reporting.py",
+      "dst": "src/myatry/computer_reporting.py",
+      "sha256": "7345f17c7efe25456593c4359d60eac1ecb0cc0c959e9698d625e7e23b65adc8",
+      "source_sha256": "7345f17c7efe25456593c4359d60eac1ecb0cc0c959e9698d625e7e23b65adc8",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/computer_tasks.py",
+      "dst": "src/myatry/computer_tasks.py",
+      "sha256": "4a34e51660b7dd915061544facb0feb2b50b3d7a1a70970898eb589e707f96ef",
+      "source_sha256": "4a34e51660b7dd915061544facb0feb2b50b3d7a1a70970898eb589e707f96ef",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/computer_tools.py",
+      "dst": "src/myatry/computer_tools.py",
+      "sha256": "c2359ced5d8ac25d94c9c445b2b698d4692618f0747fb26e193dba001d48a0c7",
+      "source_sha256": "c2359ced5d8ac25d94c9c445b2b698d4692618f0747fb26e193dba001d48a0c7",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/context.py",
+      "dst": "src/myatry/context.py",
+      "sha256": "a3b104aabe5332fdcf7e8aa5c935b2f94760bfad4c9c8af0f7ef279e2132b1ce",
+      "source_sha256": "a3b104aabe5332fdcf7e8aa5c935b2f94760bfad4c9c8af0f7ef279e2132b1ce",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/context_read_view.py",
+      "dst": "src/myatry/context_read_view.py",
+      "sha256": "103fe0496a7fe4a3294522e010f1ca6133a56dc5c628f3780af8c2031fd90ede",
+      "source_sha256": "103fe0496a7fe4a3294522e010f1ca6133a56dc5c628f3780af8c2031fd90ede",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/context_viewer.html",
+      "dst": "src/myatry/context_viewer.html",
+      "sha256": "74d9d538013442be40f904bef75415aa79698adb80305b6a34b6752f95f95a71",
+      "source_sha256": "74d9d538013442be40f904bef75415aa79698adb80305b6a34b6752f95f95a71",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/context_viewer.py",
+      "dst": "src/myatry/context_viewer.py",
+      "sha256": "4146242aa97f86224093d574c9b7625ec9e831d8c46da35ec63575877f9d5809",
+      "source_sha256": "0c41e4f9aadbde2c5422fb33aa942d8d4dea187c908a94ba07feeb9b00f3e29e",
+      "adaptation": "仅移除相邻 MYATRI 私聊库发现；保留项目 state_root 群库扫描与原控制。"
+    },
+    {
+      "src": "src/myatri_bridge/control_proxy.py",
+      "dst": "src/myatry/control_proxy.py",
+      "sha256": "d3988e4dc320f10b01f698c5c3a98f594aa9217b62596774c17022cdb92bc02f",
+      "source_sha256": "d3988e4dc320f10b01f698c5c3a98f594aa9217b62596774c17022cdb92bc02f",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/deepseek_web.py",
+      "dst": "src/myatry/deepseek_web.py",
+      "sha256": "fdb4a86063e14fd8d4f870c2fee898b761093470e633791c1f024dcbb1182c17",
+      "source_sha256": "fdb4a86063e14fd8d4f870c2fee898b761093470e633791c1f024dcbb1182c17",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/dsh_client.py",
+      "dst": "src/myatry/dsh_client.py",
+      "sha256": "3071a521a544b7f57bb5434a297bc1f9c8ba71f9aaec4e0f4dd4bfc4484d9e19",
+      "source_sha256": "3071a521a544b7f57bb5434a297bc1f9c8ba71f9aaec4e0f4dd4bfc4484d9e19",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/group_memory.py",
+      "dst": "src/myatry/group_memory.py",
+      "sha256": "fde02ac9267bc8cc100ddd71540f5577aa41a4e8c05d3b7586ed2e3c6e2d48c5",
+      "source_sha256": "fde02ac9267bc8cc100ddd71540f5577aa41a4e8c05d3b7586ed2e3c6e2d48c5",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/group_prompt.py",
+      "dst": "src/myatry/group_prompt.py",
+      "sha256": "3ec55e8a8cc8d48247513e85ff6cce49b3d20baff85deaf617650ca571399c62",
+      "source_sha256": "3ec55e8a8cc8d48247513e85ff6cce49b3d20baff85deaf617650ca571399c62",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/harness/computer-runner.mjs",
+      "dst": "src/myatry/harness/computer-runner.mjs",
+      "sha256": "ab683c1dcdefb85430325c9d19788aef06818e84d8d722fd961458d1a2009076",
+      "source_sha256": "ab683c1dcdefb85430325c9d19788aef06818e84d8d722fd961458d1a2009076",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/harness/native-tools.mjs",
+      "dst": "src/myatry/harness/native-tools.mjs",
+      "sha256": "91076c687f0e217cad9c13b4e120d350626f5980f6880e1c0228f14e35c7c2b2",
+      "source_sha256": "91076c687f0e217cad9c13b4e120d350626f5980f6880e1c0228f14e35c7c2b2",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/harness/task-agent.mjs",
+      "dst": "src/myatry/harness/task-agent.mjs",
+      "sha256": "6de86847f83477f5e631d51ef3074e4aa4daab718034ac89270b87ddeee39a2f",
+      "source_sha256": "6de86847f83477f5e631d51ef3074e4aa4daab718034ac89270b87ddeee39a2f",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/harness/windows-uia.ps1",
+      "dst": "src/myatry/harness/windows-uia.ps1",
+      "sha256": "1a6d13812f05c9c877b950d824c58729a735131b3070074ef796f7ca9b22f0cd",
+      "source_sha256": "1a6d13812f05c9c877b950d824c58729a735131b3070074ef796f7ca9b22f0cd",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/health.py",
+      "dst": "src/myatry/health.py",
+      "sha256": "e0832f0f740122add3c3a81fade908eefc99a4357c716fb9db9215bb1f7d84e8",
+      "source_sha256": "e0832f0f740122add3c3a81fade908eefc99a4357c716fb9db9215bb1f7d84e8",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/identity.py",
+      "dst": "src/myatry/identity.py",
+      "sha256": "661d8043cb6a402f99c3c022c3976e22078c3a478d27200b3346c107278cd539",
+      "source_sha256": "661d8043cb6a402f99c3c022c3976e22078c3a478d27200b3346c107278cd539",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/local_chat.py",
+      "dst": "src/myatry/local_chat.py",
+      "sha256": "6b3ee022eabd7c1c7548a13ff5c3e4a9d80fbd8dcb3d040298935d0de09f5811",
+      "source_sha256": "ba3b26b2cdf7323076be813be249a73de3816424983b073025fc34dabba78c28",
+      "adaptation": "清理 AstrBot 描述，原同库互斥聊天逻辑原样。"
+    },
+    {
+      "src": "src/myatri_bridge/maintenance.py",
+      "dst": "src/myatry/maintenance.py",
+      "sha256": "49713f28b78b680b1179bbc96bbf19f0de6643d13a22488213ac5e811f4595b7",
+      "source_sha256": "49713f28b78b680b1179bbc96bbf19f0de6643d13a22488213ac5e811f4595b7",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/memory_repair.py",
+      "dst": "src/myatry/memory_repair.py",
+      "sha256": "ef9a7cfdb7d73e83df3ad6a8889597ef3601cdb649bfb2ee91c963dc4af6ba9e",
+      "source_sha256": "ef9a7cfdb7d73e83df3ad6a8889597ef3601cdb649bfb2ee91c963dc4af6ba9e",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/memory_review.py",
+      "dst": "src/myatry/memory_review.py",
+      "sha256": "ac810196fd7f917c43c8bb71acb63d1dc1287f6ff8f8c208d84bc813e57d4c20",
+      "source_sha256": "ac810196fd7f917c43c8bb71acb63d1dc1287f6ff8f8c208d84bc813e57d4c20",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/monitor.html",
+      "dst": "src/myatry/monitor.html",
+      "sha256": "6b3a63df749b53a5d229138b191cb4dd3ca7904fcb75144bb29e4c03c61cc96a",
+      "source_sha256": "6772e66e718932d450baa3ad56c76c3ca2a53b80c729f423d23b91f7473fc95a",
+      "adaptation": "清理 AstrBot 说明与导出文件名前缀，监视控制协议原样。"
+    },
+    {
+      "src": "src/myatri_bridge/monitor.py",
+      "dst": "src/myatry/monitor.py",
+      "sha256": "ade8ddc07781958c0237171980e522beed6202aeb7eca58fe22bb61fb0f6b1c3",
+      "source_sha256": "371f61bd8c9e8320b07a3e78180f4b79d4d2ccd23cc5fd1586c80ee8717092e5",
+      "adaptation": "清理 AstrBot 统计说明，统计逻辑原样。"
+    },
+    {
+      "src": "src/myatri_bridge/monitor_stats.py",
+      "dst": "src/myatry/monitor_stats.py",
+      "sha256": "4ca6c43592d17fbbefe66d3b40ee70d7c9e1098c8e711bb25fa4c9c9ff01c9a7",
+      "source_sha256": "4ca6c43592d17fbbefe66d3b40ee70d7c9e1098c8e711bb25fa4c9c9ff01c9a7",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/proactive.py",
+      "dst": "src/myatry/proactive.py",
+      "sha256": "9ac556ad9a63a8cf34db8e1bb2726953329e5fa41f9b61e46114d36952874d20",
+      "source_sha256": "9ac556ad9a63a8cf34db8e1bb2726953329e5fa41f9b61e46114d36952874d20",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/proactive_prompt.py",
+      "dst": "src/myatry/proactive_prompt.py",
+      "sha256": "cab0e866dd356bcb901dd498da3a5227da6c36644f2e05f0ba456278b48e9026",
+      "source_sha256": "cab0e866dd356bcb901dd498da3a5227da6c36644f2e05f0ba456278b48e9026",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/prompt_data.py",
+      "dst": "src/myatry/prompt_data.py",
+      "sha256": "ce18860d1ac3e505c8a789490b4618351ad746f139acc614a35eab26a5f1939c",
+      "source_sha256": "ce18860d1ac3e505c8a789490b4618351ad746f139acc614a35eab26a5f1939c",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/prompts/executor.md",
+      "dst": "src/myatry/prompts/executor.md",
+      "sha256": "7a39e756d1b8698c6872fbd4249e4c851547b200c9165b9354030afab6de54cd",
+      "source_sha256": "7a39e756d1b8698c6872fbd4249e4c851547b200c9165b9354030afab6de54cd",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/prompts/executor_full.md",
+      "dst": "src/myatry/prompts/executor_full.md",
+      "sha256": "546526477697c1e54c1057598a8d2c693af92a7b6a011fd27235c9a9e64be439",
+      "source_sha256": "546526477697c1e54c1057598a8d2c693af92a7b6a011fd27235c9a9e64be439",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/reading_conversation.py",
+      "dst": "src/myatry/reading_conversation.py",
+      "sha256": "66077eb08faec9ace4bc25c24b91c441e24c49b5749913dbbdd0f12279f133c8",
+      "source_sha256": "66077eb08faec9ace4bc25c24b91c441e24c49b5749913dbbdd0f12279f133c8",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/recovery.py",
+      "dst": "src/myatry/recovery.py",
+      "sha256": "c9f27d3f0836cdeee5be344e2ee28908eb11d84a4ac2a72dd58d402a1559139a",
+      "source_sha256": "c9f27d3f0836cdeee5be344e2ee28908eb11d84a4ac2a72dd58d402a1559139a",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/reply_guard.py",
+      "dst": "src/myatry/reply_guard.py",
+      "sha256": "456197082b651d8d89c1fecce1b410a90738e9c0e63227f1e8746cb63b3043cb",
+      "source_sha256": "456197082b651d8d89c1fecce1b410a90738e9c0e63227f1e8746cb63b3043cb",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/runtime_controls.py",
+      "dst": "src/myatry/runtime_controls.py",
+      "sha256": "107c4cea138d857aaf004bb3fee3d8cf3157af15badd19d8414b8fa041887ff0",
+      "source_sha256": "107c4cea138d857aaf004bb3fee3d8cf3157af15badd19d8414b8fa041887ff0",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/server.py",
+      "dst": "src/myatry/server.py",
+      "sha256": "fcce5ef3ff163e15d18843120127e8e6765c3d850ebcd28fee95e22fae6c86c1",
+      "source_sha256": "fcce5ef3ff163e15d18843120127e8e6765c3d850ebcd28fee95e22fae6c86c1",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/short_memory.py",
+      "dst": "src/myatry/short_memory.py",
+      "sha256": "e7b9658972357953cd4607ffd1a37931062bf4d253c3b78971ae2a1ce423403c",
+      "source_sha256": "e7b9658972357953cd4607ffd1a37931062bf4d253c3b78971ae2a1ce423403c",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/tool_reading.py",
+      "dst": "src/myatry/tool_reading.py",
+      "sha256": "160ae972b3db43b0a9b8ede81ec9842ddafe22cd77b5cbeb4664c856b838f496",
+      "source_sha256": "160ae972b3db43b0a9b8ede81ec9842ddafe22cd77b5cbeb4664c856b838f496",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/topics.py",
+      "dst": "src/myatry/topics.py",
+      "sha256": "94897d9faf0e349e610da7439bad3c362b22e85c382c66ff351cbec5e627d1d0",
+      "source_sha256": "94897d9faf0e349e610da7439bad3c362b22e85c382c66ff351cbec5e627d1d0",
+      "adaptation": "原样"
+    },
+    {
+      "src": "src/myatri_bridge/web_tools.py",
+      "dst": "src/myatry/web_tools.py",
+      "sha256": "69f2d65ce8be8bfac50d867198e6379fbb1d5f7316392f6a77bd596b1d8a750f",
+      "source_sha256": "69f2d65ce8be8bfac50d867198e6379fbb1d5f7316392f6a77bd596b1d8a750f",
+      "adaptation": "原样"
+    },
+    {
+      "src": "config/bridge.example.toml",
+      "dst": "config/bridge.example.toml",
+      "sha256": "5fb40d70db7e3407a065cd9f0794cb3d654103fcb3e5bedf9609e0da81e0db3f",
+      "source_sha256": "403e3a79a5c1c7a9e1d760e194801ee9fc717c6374c5e9438f55120cd2bedc6b",
+      "adaptation": "清理 AstrBot 和旧插件注释，配置值原样。"
+    },
+    {
+      "src": "config/wechatagent.example.toml",
+      "dst": "config/wechatagent.example.toml",
+      "sha256": "3aed4a235a7c3ffa1748dd7622695df0097cb118b20f03fa5eec5b0a9754d915",
+      "source_sha256": "3aed4a235a7c3ffa1748dd7622695df0097cb118b20f03fa5eec5b0a9754d915",
+      "adaptation": "原样"
+    },
+    {
+      "src": "config/engine.toml",
+      "dst": "config/engine.toml",
+      "sha256": "930bdc8a71cd964d3153a7a3a3460cf9c995f5359c80eabe7c13b1a29ee68d74",
+      "source_sha256": "930bdc8a71cd964d3153a7a3a3460cf9c995f5359c80eabe7c13b1a29ee68d74",
+      "adaptation": "原样"
+    },
+    {
+      "src": "config/persona/persona.md",
+      "dst": "config/persona/persona.md",
+      "sha256": "8fac64ac43934c0cb9ab8daa1f5d43e9cc09c28794196be33bf24238c5adac64",
+      "source_sha256": "8fac64ac43934c0cb9ab8daa1f5d43e9cc09c28794196be33bf24238c5adac64",
+      "adaptation": "原样"
+    },
+    {
+      "src": "config/harness/package.json",
+      "dst": "config/harness/package.json",
+      "sha256": "36bfa87b96d13f3b778b360573572688dad2495d966e8b525dc13168ed170d64",
+      "source_sha256": "36bfa87b96d13f3b778b360573572688dad2495d966e8b525dc13168ed170d64",
+      "adaptation": "原样"
+    },
+    {
+      "src": "config/harness/executor.example.json",
+      "dst": "config/harness/executor.example.json",
+      "sha256": "2607a168cbf0712837125771f99c9141067f54d018d5ce61222399dc4b2e9ae4",
+      "source_sha256": "2607a168cbf0712837125771f99c9141067f54d018d5ce61222399dc4b2e9ae4",
+      "adaptation": "原样"
+    },
+    {
+      "src": "config/harness/pnpm-lock.yaml",
+      "dst": "config/harness/pnpm-lock.yaml",
+      "sha256": "a9403f1f0644635489d9a5d6b378f4b7985e0e03cd4d0f028d702b22ecddb801",
+      "source_sha256": "a9403f1f0644635489d9a5d6b378f4b7985e0e03cd4d0f028d702b22ecddb801",
+      "adaptation": "原样"
+    },
+    {
+      "src": "config/harness/pnpm-workspace.yaml",
+      "dst": "config/harness/pnpm-workspace.yaml",
+      "sha256": "30ce489961d21021d70c396436294ea5449ec98d2d0b0b479d8ab6abf4cb98ac",
+      "source_sha256": "30ce489961d21021d70c396436294ea5449ec98d2d0b0b479d8ab6abf4cb98ac",
+      "adaptation": "原样"
+    },
+    {
+      "src": "astrbot_plugin_myatri/wechatagent_client.py",
+      "dst": "src/myatry/wechat_client.py",
+      "source_sha256": "faeeeab74cfdfeb6f8c482a7ebd3c72c9eb8748084562b4dc9cdd74fc76e9f4b",
+      "sha256": "faeeeab74cfdfeb6f8c482a7ebd3c72c9eb8748084562b4dc9cdd74fc76e9f4b",
+      "adaptation": "原样迁入无AstrBot依赖的HTTP契约"
+    },
+    {
+      "src": "scripts/setup_computer_control.py",
+      "dst": "scripts/setup_computer_control.py",
+      "source_sha256": "5b43d99755e5d94c31de3fd9f4da4d52218e0efb7c722c4d928bb7f1dd2cee93",
+      "sha256": "d55b5051577127cef4d962c6a774e346e409f4b0db61993c17828d963bdc89a7",
+      "adaptation": "包名改myatry；去掉本项目不存在的companion配置/导入分支"
+    },
+    {
+      "src": "scripts/harness_cli.py",
+      "dst": "scripts/harness_cli.py",
+      "source_sha256": "c61698156269dccf36553f451e49a555d798a58c42c0ab6f7f171e6fcb1bb3e5",
+      "sha256": "f179ddeea9a6c978c9ed5111f437f88be846c432ec8d8fddd036f7543af96581",
+      "adaptation": "仅读取本项目bridge配置，移除旧companion配置分支"
+    }
+  ],
+  "new_implementation": [
+    "src/myatry/wechat.py",
+    "src/myatry/__main__.py",
+    "src/myatry/launch.py",
+    "scripts/wechat_reader.py"
+  ]
+}

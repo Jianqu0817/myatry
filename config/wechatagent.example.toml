@@ -1,0 +1,12 @@
+[wechatagent]
+# WeChatAgent RUNNING data/project directory containing the files below.
+# A source checkout is not an installed reader/native backend.
+project_dir = ""
+io_config = "state/wechat-io-config.json"
+native_token = "state/hook/native-token.txt"
+native_url = "http://127.0.0.1:30001"
+group_name = "填写测试群的完整名称"
+bot_nickname = "填写机器人群昵称"
+# Populated only by an authenticated check, never inferred from nicknames.
+group_id = ""
+bot_id = ""

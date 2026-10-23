@@ -1,0 +1,85 @@
+[chat]
+endpoint = "https://api.deepseek.com"
+model = "deepseek-flash"
+allow_paid = false
+capabilities_verified = true
+# Conversation only. Keep thinking enabled; low reduces routine chat latency.
+thinking = true
+reasoning_effort = "low"
+# Combined reasoning + answer ceiling, not a target or a separate reasoning cap.
+thinking_max_tokens = 8192
+thinking_timeout = 120
+
+[embedding]
+backend = "auto" # Use the verified local BGE model when present; otherwise TF-IDF.
+path = "var/models/bge-small-zh-v1.5"
+# backend = "bge" 需 uv sync --extra neural 与显式下载模型
+# path = "var/models/bge-small-zh-v1.5"
+
+[budget]
+daily_tokens = 50000000
+# 价格需依据实际供应商配置；0只表示未配置估价，不表示真实API免费
+input_per_million = 0.0
+output_per_million = 0.0
+
+[outreach]
+enabled = false
+
+[context]
+# Natural chat: usually 20-100 chars; local fallback cap 160, no rewrite API.
+reply_min_chars = 20
+reply_max_chars = 160
+reply_max_tokens = 1024
+trace_every_turns = 30
+recall_budget_chars = 50000
+timezone = "Asia/Shanghai"
+
+limit = 1000000
+compact_at = 650000
+output_reserve = 4096
+safety = 4096
+compaction_chunk_bytes = 200000
+compaction_max_chunks = 16
+llm_compaction = true
+llm_activation = false
+reply_target_max_chars = 100
+recall_excerpt_chars = 4000
+summary_budget_bytes = 60000
+imported_history_budget_bytes = 96000
+recent_history_turns = 80
+recent_history_bytes = 240000
+compaction_detail_items = 24
+compaction_detail_chars = 600
+compaction_output_tokens = 8000
+working_context_tokens = 200000
+group_summary_chars = 30000
+capture_requests = false
+
+[emotion]
+enabled = true
+llm_appraisal = true
+emotion_half_life_seconds = 1800
+mood_half_life_seconds = 21600
+emotion_alpha = 0.65
+mood_alpha = 0.2
+inertia = 0.5
+# Only foreground candidate reordering; unvalidated, off by default.
+mood_recall = false
+recall_weight = 0.05
+
+[schedule]
+timezone = "Asia/Shanghai"
+period_hours = 3
+night_hour = 2
+idle_minutes = 90
+
+[cognition]
+# One completed user/assistant exchange counts as one turn.
+maintenance_turns = 50
+deep_every_batches = 3
+persona_every_batches = 6
+poll_seconds = 5
+
+[storage]
+# Roughly thirty dialogue turns; originals are committed immediately.
+projection_every_commits = 60

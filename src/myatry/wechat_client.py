@@ -225,10 +225,10 @@ class NativeClient:
     async def _send(self, text):
         if not self.group_id or not text.strip() or len(text) > 8000:
             raise NotReady("INVALID_SEND")
-        await self.check()
+        # The receipt snapshot itself proves reader liveness; a full account
+        # check runs once more immediately before the sole submission.
         before = {str(row.get("localId")) for row in await self.rows()}
         started = time.time()
-        # Check the account again immediately before the sole submission.
         await self.check()
         response = await self.native(
             "/SendTextMsg", {"wxidorgid": self.group_id, "msg": text}
@@ -267,7 +267,7 @@ class NativeClient:
                     return
             if time.monotonic() >= deadline:
                 raise NotReady("SEND_RECEIPT_UNKNOWN")
-            await asyncio.sleep(0.4)
+            await asyncio.sleep(0.25)
 
     async def events(self):
         async with self.http.stream(
